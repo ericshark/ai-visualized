@@ -1,0 +1,2475 @@
+[
+ {
+  "id": "sky",
+  "label": "Why is the sky blue?",
+  "prompt": "Why is the sky blue?",
+  "events": [
+   {
+    "type": "request.created",
+    "t": 0,
+    "stage": "send",
+    "payload": {
+     "method": "POST",
+     "url": "/api/chat/stream",
+     "headers": {
+      "Content-Type": "application/json",
+      "Accept": "text/event-stream"
+     },
+     "body": {
+      "prompt": "Why is the sky blue?"
+     },
+     "bytes": 34
+    }
+   },
+   {
+    "type": "backend.received",
+    "t": 34,
+    "stage": "backend",
+    "payload": {
+     "endpoint": "/api/chat/stream",
+     "method": "POST"
+    }
+   },
+   {
+    "type": "backend.validated",
+    "t": 36,
+    "stage": "backend",
+    "payload": {
+     "promptChars": 20,
+     "checks": [
+      {
+       "id": "present",
+       "label": "The message is not empty",
+       "ok": true
+      },
+      {
+       "id": "length",
+       "label": "It is under 500 characters",
+       "ok": true
+      },
+      {
+       "id": "rate",
+       "label": "Your connection is within the request limit",
+       "ok": true
+      },
+      {
+       "id": "config",
+       "label": "Instructions and settings added",
+       "ok": true
+      },
+      {
+       "id": "key",
+       "label": "Secret API key attached on the server",
+       "ok": true
+      }
+     ]
+    }
+   },
+   {
+    "type": "input.tokens",
+    "t": 38,
+    "stage": "tokens",
+    "payload": {
+     "tokens": [
+      {
+       "text": "Why",
+       "id": 13903
+      },
+      {
+       "text": " is",
+       "id": 382
+      },
+      {
+       "text": " the",
+       "id": 290
+      },
+      {
+       "text": " sky",
+       "id": 17307
+      },
+      {
+       "text": " blue",
+       "id": 9861
+      },
+      {
+       "text": "?",
+       "id": 30
+      }
+     ],
+     "encoding": "o200k_base",
+     "exact": false
+    }
+   },
+   {
+    "type": "provider.request",
+    "t": 41,
+    "stage": "provider",
+    "payload": {
+     "provider": "OpenAI",
+     "model": "gpt-6-luna",
+     "settings": {
+      "max_output_tokens": 220,
+      "stream": true,
+      "reasoning_effort": "none",
+      "top_logprobs": 5
+     },
+     "instructions": "You are a friendly teacher in an interactive lesson about how AI works. Answer the visitor's question in plain language, in two to four short sentences (under 90 words). Do not use Markdown, lists or headings.",
+     "preview": {
+      "model": "gpt-6-luna",
+      "instructions": "You are a friendly teacher in an interactive lesson about how AI works. Answer the visitor's question in plain language, in two to four short sentences (under 90 words). Do not use Markdown, lists or headings.",
+      "input": "Why is the sky blue?",
+      "max_output_tokens": 220,
+      "stream": true,
+      "reasoning_effort": "none",
+      "top_logprobs": 5,
+      "Authorization": "Bearer sk-…redacted"
+     }
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 482,
+    "stage": "return",
+    "payload": {
+     "text": "Sunlight",
+     "tokens": [
+      {
+       "text": "Sun",
+       "id": 30112,
+       "top": [
+        {
+         "token": "Sun",
+         "p": 0.46
+        },
+        {
+         "token": "The",
+         "p": 0.31
+        },
+        {
+         "token": "Because",
+         "p": 0.12
+        },
+        {
+         "token": "Light",
+         "p": 0.06
+        },
+        {
+         "token": "It",
+         "p": 0.03
+        }
+       ],
+       "p": 0.46
+      },
+      {
+       "text": "light",
+       "id": 6038,
+       "top": [
+        {
+         "token": "light",
+         "p": 0.97
+        },
+        {
+         "token": "beams",
+         "p": 0.01
+        },
+        {
+         "token": "rays",
+         "p": 0.01
+        }
+       ],
+       "p": 0.97
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 532,
+    "stage": "return",
+    "payload": {
+     "text": " looks white",
+     "tokens": [
+      {
+       "text": " looks",
+       "id": 8224,
+       "top": [
+        {
+         "token": " is",
+         "p": 0.41
+        },
+        {
+         "token": " looks",
+         "p": 0.33
+        },
+        {
+         "token": " appears",
+         "p": 0.15
+        },
+        {
+         "token": " seems",
+         "p": 0.06
+        },
+        {
+         "token": " contains",
+         "p": 0.03
+        }
+       ],
+       "p": 0.33
+      },
+      {
+       "text": " white",
+       "id": 6461,
+       "top": [
+        {
+         "token": " white",
+         "p": 0.92
+        },
+        {
+         "token": " yellow",
+         "p": 0.04
+        },
+        {
+         "token": " clear",
+         "p": 0.02
+        }
+       ],
+       "p": 0.92
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 576,
+    "stage": "return",
+    "payload": {
+     "text": ", but",
+     "tokens": [
+      {
+       "text": ",",
+       "id": 11,
+       "top": [
+        {
+         "token": ",",
+         "p": 0.88
+        },
+        {
+         "token": " to",
+         "p": 0.07
+        },
+        {
+         "token": " because",
+         "p": 0.03
+        }
+       ],
+       "p": 0.88
+      },
+      {
+       "text": " but",
+       "id": 889
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 624,
+    "stage": "return",
+    "payload": {
+     "text": " it is",
+     "tokens": [
+      {
+       "text": " it",
+       "id": 480
+      },
+      {
+       "text": " is",
+       "id": 382
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 685,
+    "stage": "return",
+    "payload": {
+     "text": " a mix of",
+     "tokens": [
+      {
+       "text": " a",
+       "id": 261
+      },
+      {
+       "text": " mix",
+       "id": 9762
+      },
+      {
+       "text": " of",
+       "id": 328
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 731,
+    "stage": "return",
+    "payload": {
+     "text": " every color",
+     "tokens": [
+      {
+       "text": " every",
+       "id": 1753
+      },
+      {
+       "text": " color",
+       "id": 3089
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 773,
+    "stage": "return",
+    "payload": {
+     "text": ". When",
+     "tokens": [
+      {
+       "text": ".",
+       "id": 13
+      },
+      {
+       "text": " When",
+       "id": 4296
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 823,
+    "stage": "return",
+    "payload": {
+     "text": " it passes",
+     "tokens": [
+      {
+       "text": " it",
+       "id": 480
+      },
+      {
+       "text": " passes",
+       "id": 29169
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 879,
+    "stage": "return",
+    "payload": {
+     "text": " through the",
+     "tokens": [
+      {
+       "text": " through",
+       "id": 1819
+      },
+      {
+       "text": " the",
+       "id": 290
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 924,
+    "stage": "return",
+    "payload": {
+     "text": " air,",
+     "tokens": [
+      {
+       "text": " air",
+       "id": 3693
+      },
+      {
+       "text": ",",
+       "id": 11
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 967,
+    "stage": "return",
+    "payload": {
+     "text": " tiny gas",
+     "tokens": [
+      {
+       "text": " tiny",
+       "id": 20049
+      },
+      {
+       "text": " gas",
+       "id": 7322
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1014,
+    "stage": "return",
+    "payload": {
+     "text": " molecules scatter",
+     "tokens": [
+      {
+       "text": " molecules",
+       "id": 53785
+      },
+      {
+       "text": " scatter",
+       "id": 36731
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1060,
+    "stage": "return",
+    "payload": {
+     "text": " short blue",
+     "tokens": [
+      {
+       "text": " short",
+       "id": 4022
+      },
+      {
+       "text": " blue",
+       "id": 9861
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1103,
+    "stage": "return",
+    "payload": {
+     "text": " wavelengths much",
+     "tokens": [
+      {
+       "text": " wavelengths",
+       "id": 183230
+      },
+      {
+       "text": " much",
+       "id": 2009
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1160,
+    "stage": "return",
+    "payload": {
+     "text": " more than long",
+     "tokens": [
+      {
+       "text": " more",
+       "id": 945
+      },
+      {
+       "text": " than",
+       "id": 1572
+      },
+      {
+       "text": " long",
+       "id": 1701
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1209,
+    "stage": "return",
+    "payload": {
+     "text": " red ones",
+     "tokens": [
+      {
+       "text": " red",
+       "id": 3592
+      },
+      {
+       "text": " ones",
+       "id": 8104
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1253,
+    "stage": "return",
+    "payload": {
+     "text": ". That",
+     "tokens": [
+      {
+       "text": ".",
+       "id": 13
+      },
+      {
+       "text": " That",
+       "id": 4569
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1294,
+    "stage": "return",
+    "payload": {
+     "text": " scattered blue",
+     "tokens": [
+      {
+       "text": " scattered",
+       "id": 67096
+      },
+      {
+       "text": " blue",
+       "id": 9861
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1366,
+    "stage": "return",
+    "payload": {
+     "text": " light reaches your",
+     "tokens": [
+      {
+       "text": " light",
+       "id": 4207
+      },
+      {
+       "text": " reaches",
+       "id": 42373
+      },
+      {
+       "text": " your",
+       "id": 634
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1396,
+    "stage": "return",
+    "payload": {
+     "text": " eyes from",
+     "tokens": [
+      {
+       "text": " eyes",
+       "id": 9623
+      },
+      {
+       "text": " from",
+       "id": 591
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1456,
+    "stage": "return",
+    "payload": {
+     "text": " every direction, so",
+     "tokens": [
+      {
+       "text": " every",
+       "id": 1753
+      },
+      {
+       "text": " direction",
+       "id": 9262
+      },
+      {
+       "text": ",",
+       "id": 11
+      },
+      {
+       "text": " so",
+       "id": 813
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1501,
+    "stage": "return",
+    "payload": {
+     "text": " the whole",
+     "tokens": [
+      {
+       "text": " the",
+       "id": 290
+      },
+      {
+       "text": " whole",
+       "id": 6062
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1561,
+    "stage": "return",
+    "payload": {
+     "text": " sky looks blue",
+     "tokens": [
+      {
+       "text": " sky",
+       "id": 17307
+      },
+      {
+       "text": " looks",
+       "id": 8224
+      },
+      {
+       "text": " blue",
+       "id": 9861
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1622,
+    "stage": "return",
+    "payload": {
+     "text": ". At sunset",
+     "tokens": [
+      {
+       "text": ".",
+       "id": 13
+      },
+      {
+       "text": " At",
+       "id": 3604
+      },
+      {
+       "text": " sunset",
+       "id": 57965
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1680,
+    "stage": "return",
+    "payload": {
+     "text": ", light",
+     "tokens": [
+      {
+       "text": ",",
+       "id": 11
+      },
+      {
+       "text": " light",
+       "id": 4207
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1722,
+    "stage": "return",
+    "payload": {
+     "text": " crosses much",
+     "tokens": [
+      {
+       "text": " crosses",
+       "id": 95853
+      },
+      {
+       "text": " much",
+       "id": 2009
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1788,
+    "stage": "return",
+    "payload": {
+     "text": " more air,",
+     "tokens": [
+      {
+       "text": " more",
+       "id": 945
+      },
+      {
+       "text": " air",
+       "id": 3693
+      },
+      {
+       "text": ",",
+       "id": 11
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1840,
+    "stage": "return",
+    "payload": {
+     "text": " so most of",
+     "tokens": [
+      {
+       "text": " so",
+       "id": 813
+      },
+      {
+       "text": " most",
+       "id": 1645
+      },
+      {
+       "text": " of",
+       "id": 328
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1893,
+    "stage": "return",
+    "payload": {
+     "text": " the blue is",
+     "tokens": [
+      {
+       "text": " the",
+       "id": 290
+      },
+      {
+       "text": " blue",
+       "id": 9861
+      },
+      {
+       "text": " is",
+       "id": 382
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1955,
+    "stage": "return",
+    "payload": {
+     "text": " scattered away and",
+     "tokens": [
+      {
+       "text": " scattered",
+       "id": 67096
+      },
+      {
+       "text": " away",
+       "id": 4194
+      },
+      {
+       "text": " and",
+       "id": 326
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 2003,
+    "stage": "return",
+    "payload": {
+     "text": " reds remain.",
+     "tokens": [
+      {
+       "text": " reds",
+       "id": 167801
+      },
+      {
+       "text": " remain",
+       "id": 12760
+      },
+      {
+       "text": ".",
+       "id": 13
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.done",
+    "t": 2021,
+    "stage": "return",
+    "payload": {
+     "text": "Sunlight looks white, but it is a mix of every color. When it passes through the air, tiny gas molecules scatter short blue wavelengths much more than long red ones. That scattered blue light reaches your eyes from every direction, so the whole sky looks blue. At sunset, light crosses much more air, so most of the blue is scattered away and reds remain.",
+     "usage": {
+      "inputTokens": 57,
+      "outputTokens": 74
+     },
+     "finishReason": "completed",
+     "probabilitiesMeasured": false,
+     "tokenSource": "tokenizer",
+     "serverMs": {
+      "firstToken": 433,
+      "total": 1991
+     }
+    }
+   }
+  ]
+ },
+ {
+  "id": "plane",
+  "label": "How does a plane stay in the air?",
+  "prompt": "How does a plane stay in the air?",
+  "events": [
+   {
+    "type": "request.created",
+    "t": 0,
+    "stage": "send",
+    "payload": {
+     "method": "POST",
+     "url": "/api/chat/stream",
+     "headers": {
+      "Content-Type": "application/json",
+      "Accept": "text/event-stream"
+     },
+     "body": {
+      "prompt": "How does a plane stay in the air?"
+     },
+     "bytes": 47
+    }
+   },
+   {
+    "type": "backend.received",
+    "t": 34,
+    "stage": "backend",
+    "payload": {
+     "endpoint": "/api/chat/stream",
+     "method": "POST"
+    }
+   },
+   {
+    "type": "backend.validated",
+    "t": 36,
+    "stage": "backend",
+    "payload": {
+     "promptChars": 33,
+     "checks": [
+      {
+       "id": "present",
+       "label": "The message is not empty",
+       "ok": true
+      },
+      {
+       "id": "length",
+       "label": "It is under 500 characters",
+       "ok": true
+      },
+      {
+       "id": "rate",
+       "label": "Your connection is within the request limit",
+       "ok": true
+      },
+      {
+       "id": "config",
+       "label": "Instructions and settings added",
+       "ok": true
+      },
+      {
+       "id": "key",
+       "label": "Secret API key attached on the server",
+       "ok": true
+      }
+     ]
+    }
+   },
+   {
+    "type": "input.tokens",
+    "t": 38,
+    "stage": "tokens",
+    "payload": {
+     "tokens": [
+      {
+       "text": "How",
+       "id": 5299
+      },
+      {
+       "text": " does",
+       "id": 2226
+      },
+      {
+       "text": " a",
+       "id": 261
+      },
+      {
+       "text": " plane",
+       "id": 16499
+      },
+      {
+       "text": " stay",
+       "id": 5092
+      },
+      {
+       "text": " in",
+       "id": 306
+      },
+      {
+       "text": " the",
+       "id": 290
+      },
+      {
+       "text": " air",
+       "id": 3693
+      },
+      {
+       "text": "?",
+       "id": 30
+      }
+     ],
+     "encoding": "o200k_base",
+     "exact": false
+    }
+   },
+   {
+    "type": "provider.request",
+    "t": 41,
+    "stage": "provider",
+    "payload": {
+     "provider": "OpenAI",
+     "model": "gpt-6-luna",
+     "settings": {
+      "max_output_tokens": 220,
+      "stream": true,
+      "reasoning_effort": "none",
+      "top_logprobs": 5
+     },
+     "instructions": "You are a friendly teacher in an interactive lesson about how AI works. Answer the visitor's question in plain language, in two to four short sentences (under 90 words). Do not use Markdown, lists or headings.",
+     "preview": {
+      "model": "gpt-6-luna",
+      "instructions": "You are a friendly teacher in an interactive lesson about how AI works. Answer the visitor's question in plain language, in two to four short sentences (under 90 words). Do not use Markdown, lists or headings.",
+      "input": "How does a plane stay in the air?",
+      "max_output_tokens": 220,
+      "stream": true,
+      "reasoning_effort": "none",
+      "top_logprobs": 5,
+      "Authorization": "Bearer sk-…redacted"
+     }
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 610,
+    "stage": "return",
+    "payload": {
+     "text": "A plane's",
+     "tokens": [
+      {
+       "text": "A",
+       "id": 32,
+       "top": [
+        {
+         "token": "A",
+         "p": 0.38
+        },
+        {
+         "token": "Planes",
+         "p": 0.34
+        },
+        {
+         "token": "An",
+         "p": 0.11
+        },
+        {
+         "token": "Airplanes",
+         "p": 0.09
+        },
+        {
+         "token": "The",
+         "p": 0.05
+        }
+       ],
+       "p": 0.38
+      },
+      {
+       "text": " plane",
+       "id": 16499,
+       "top": [
+        {
+         "token": " plane",
+         "p": 0.93
+        },
+        {
+         "token": " wing",
+         "p": 0.03
+        },
+        {
+         "token": " jet",
+         "p": 0.02
+        }
+       ],
+       "p": 0.93
+      },
+      {
+       "text": "'s",
+       "id": 885,
+       "top": [
+        {
+         "token": "'s",
+         "p": 0.58
+        },
+        {
+         "token": " stays",
+         "p": 0.24
+        },
+        {
+         "token": " flies",
+         "p": 0.11
+        },
+        {
+         "token": " uses",
+         "p": 0.04
+        }
+       ],
+       "p": 0.58
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 677,
+    "stage": "return",
+    "payload": {
+     "text": " wings are shaped",
+     "tokens": [
+      {
+       "text": " wings",
+       "id": 45908,
+       "top": [
+        {
+         "token": " wings",
+         "p": 0.95
+        },
+        {
+         "token": " engines",
+         "p": 0.02
+        },
+        {
+         "token": " shape",
+         "p": 0.01
+        }
+       ],
+       "p": 0.95
+      },
+      {
+       "text": " are",
+       "id": 553,
+       "top": [
+        {
+         "token": " are",
+         "p": 0.83
+        },
+        {
+         "token": " push",
+         "p": 0.08
+        },
+        {
+         "token": " have",
+         "p": 0.05
+        }
+       ],
+       "p": 0.83
+      },
+      {
+       "text": " shaped",
+       "id": 40123
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 719,
+    "stage": "return",
+    "payload": {
+     "text": " and tilted",
+     "tokens": [
+      {
+       "text": " and",
+       "id": 326
+      },
+      {
+       "text": " tilted",
+       "id": 186352
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 787,
+    "stage": "return",
+    "payload": {
+     "text": " so that the",
+     "tokens": [
+      {
+       "text": " so",
+       "id": 813
+      },
+      {
+       "text": " that",
+       "id": 484
+      },
+      {
+       "text": " the",
+       "id": 290
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 842,
+    "stage": "return",
+    "payload": {
+     "text": " air flowing",
+     "tokens": [
+      {
+       "text": " air",
+       "id": 3693
+      },
+      {
+       "text": " flowing",
+       "id": 54824
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 893,
+    "stage": "return",
+    "payload": {
+     "text": " past them is",
+     "tokens": [
+      {
+       "text": " past",
+       "id": 4241
+      },
+      {
+       "text": " them",
+       "id": 1373
+      },
+      {
+       "text": " is",
+       "id": 382
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 946,
+    "stage": "return",
+    "payload": {
+     "text": " pushed downward",
+     "tokens": [
+      {
+       "text": " pushed",
+       "id": 31155
+      },
+      {
+       "text": " downward",
+       "id": 83869
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 999,
+    "stage": "return",
+    "payload": {
+     "text": ". P",
+     "tokens": [
+      {
+       "text": ".",
+       "id": 13
+      },
+      {
+       "text": " P",
+       "id": 398
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1039,
+    "stage": "return",
+    "payload": {
+     "text": "ushing air",
+     "tokens": [
+      {
+       "text": "ushing",
+       "id": 12963
+      },
+      {
+       "text": " air",
+       "id": 3693
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1085,
+    "stage": "return",
+    "payload": {
+     "text": " down creates an upward",
+     "tokens": [
+      {
+       "text": " down",
+       "id": 1917
+      },
+      {
+       "text": " creates",
+       "id": 18518
+      },
+      {
+       "text": " an",
+       "id": 448
+      },
+      {
+       "text": " upward",
+       "id": 71327
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1138,
+    "stage": "return",
+    "payload": {
+     "text": " force called",
+     "tokens": [
+      {
+       "text": " force",
+       "id": 9578
+      },
+      {
+       "text": " called",
+       "id": 4358
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1186,
+    "stage": "return",
+    "payload": {
+     "text": " lift. As long",
+     "tokens": [
+      {
+       "text": " lift",
+       "id": 19604
+      },
+      {
+       "text": ".",
+       "id": 13
+      },
+      {
+       "text": " As",
+       "id": 1877
+      },
+      {
+       "text": " long",
+       "id": 1701
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1249,
+    "stage": "return",
+    "payload": {
+     "text": " as the engines",
+     "tokens": [
+      {
+       "text": " as",
+       "id": 472
+      },
+      {
+       "text": " the",
+       "id": 290
+      },
+      {
+       "text": " engines",
+       "id": 28110
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1299,
+    "stage": "return",
+    "payload": {
+     "text": " keep the",
+     "tokens": [
+      {
+       "text": " keep",
+       "id": 3357
+      },
+      {
+       "text": " the",
+       "id": 290
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1366,
+    "stage": "return",
+    "payload": {
+     "text": " plane moving fast",
+     "tokens": [
+      {
+       "text": " plane",
+       "id": 16499
+      },
+      {
+       "text": " moving",
+       "id": 10067
+      },
+      {
+       "text": " fast",
+       "id": 5661
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1426,
+    "stage": "return",
+    "payload": {
+     "text": " enough,",
+     "tokens": [
+      {
+       "text": " enough",
+       "id": 4951
+      },
+      {
+       "text": ",",
+       "id": 11
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1463,
+    "stage": "return",
+    "payload": {
+     "text": " the lift",
+     "tokens": [
+      {
+       "text": " the",
+       "id": 290
+      },
+      {
+       "text": " lift",
+       "id": 19604
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1514,
+    "stage": "return",
+    "payload": {
+     "text": " from the",
+     "tokens": [
+      {
+       "text": " from",
+       "id": 591
+      },
+      {
+       "text": " the",
+       "id": 290
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1580,
+    "stage": "return",
+    "payload": {
+     "text": " wings balances the",
+     "tokens": [
+      {
+       "text": " wings",
+       "id": 45908
+      },
+      {
+       "text": " balances",
+       "id": 62217
+      },
+      {
+       "text": " the",
+       "id": 290
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1634,
+    "stage": "return",
+    "payload": {
+     "text": " plane's",
+     "tokens": [
+      {
+       "text": " plane",
+       "id": 16499
+      },
+      {
+       "text": "'s",
+       "id": 885
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1686,
+    "stage": "return",
+    "payload": {
+     "text": " weight, so",
+     "tokens": [
+      {
+       "text": " weight",
+       "id": 6049
+      },
+      {
+       "text": ",",
+       "id": 11
+      },
+      {
+       "text": " so",
+       "id": 813
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1744,
+    "stage": "return",
+    "payload": {
+     "text": " it stays",
+     "tokens": [
+      {
+       "text": " it",
+       "id": 480
+      },
+      {
+       "text": " stays",
+       "id": 35239
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1797,
+    "stage": "return",
+    "payload": {
+     "text": " up. If",
+     "tokens": [
+      {
+       "text": " up",
+       "id": 869
+      },
+      {
+       "text": ".",
+       "id": 13
+      },
+      {
+       "text": " If",
+       "id": 1843
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1843,
+    "stage": "return",
+    "payload": {
+     "text": " it slows down",
+     "tokens": [
+      {
+       "text": " it",
+       "id": 480
+      },
+      {
+       "text": " slows",
+       "id": 134494
+      },
+      {
+       "text": " down",
+       "id": 1917
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1884,
+    "stage": "return",
+    "payload": {
+     "text": " too much",
+     "tokens": [
+      {
+       "text": " too",
+       "id": 3101
+      },
+      {
+       "text": " much",
+       "id": 2009
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1941,
+    "stage": "return",
+    "payload": {
+     "text": ", the",
+     "tokens": [
+      {
+       "text": ",",
+       "id": 11
+      },
+      {
+       "text": " the",
+       "id": 290
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 2001,
+    "stage": "return",
+    "payload": {
+     "text": " wings can no",
+     "tokens": [
+      {
+       "text": " wings",
+       "id": 45908
+      },
+      {
+       "text": " can",
+       "id": 665
+      },
+      {
+       "text": " no",
+       "id": 860
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 2050,
+    "stage": "return",
+    "payload": {
+     "text": " longer make",
+     "tokens": [
+      {
+       "text": " longer",
+       "id": 7411
+      },
+      {
+       "text": " make",
+       "id": 1520
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 2097,
+    "stage": "return",
+    "payload": {
+     "text": " enough lift.",
+     "tokens": [
+      {
+       "text": " enough",
+       "id": 4951
+      },
+      {
+       "text": " lift",
+       "id": 19604
+      },
+      {
+       "text": ".",
+       "id": 13
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.done",
+    "t": 2115,
+    "stage": "return",
+    "payload": {
+     "text": "A plane's wings are shaped and tilted so that the air flowing past them is pushed downward. Pushing air down creates an upward force called lift. As long as the engines keep the plane moving fast enough, the lift from the wings balances the plane's weight, so it stays up. If it slows down too much, the wings can no longer make enough lift.",
+     "usage": {
+      "inputTokens": 60,
+      "outputTokens": 74
+     },
+     "finishReason": "completed",
+     "probabilitiesMeasured": false,
+     "tokenSource": "tokenizer",
+     "serverMs": {
+      "firstToken": 539,
+      "total": 2085
+     }
+    }
+   }
+  ]
+ },
+ {
+  "id": "names",
+  "label": "Give me a tip for remembering names.",
+  "prompt": "Give me a tip for remembering names.",
+  "events": [
+   {
+    "type": "request.created",
+    "t": 0,
+    "stage": "send",
+    "payload": {
+     "method": "POST",
+     "url": "/api/chat/stream",
+     "headers": {
+      "Content-Type": "application/json",
+      "Accept": "text/event-stream"
+     },
+     "body": {
+      "prompt": "Give me a tip for remembering names."
+     },
+     "bytes": 50
+    }
+   },
+   {
+    "type": "backend.received",
+    "t": 34,
+    "stage": "backend",
+    "payload": {
+     "endpoint": "/api/chat/stream",
+     "method": "POST"
+    }
+   },
+   {
+    "type": "backend.validated",
+    "t": 36,
+    "stage": "backend",
+    "payload": {
+     "promptChars": 36,
+     "checks": [
+      {
+       "id": "present",
+       "label": "The message is not empty",
+       "ok": true
+      },
+      {
+       "id": "length",
+       "label": "It is under 500 characters",
+       "ok": true
+      },
+      {
+       "id": "rate",
+       "label": "Your connection is within the request limit",
+       "ok": true
+      },
+      {
+       "id": "config",
+       "label": "Instructions and settings added",
+       "ok": true
+      },
+      {
+       "id": "key",
+       "label": "Secret API key attached on the server",
+       "ok": true
+      }
+     ]
+    }
+   },
+   {
+    "type": "input.tokens",
+    "t": 38,
+    "stage": "tokens",
+    "payload": {
+     "tokens": [
+      {
+       "text": "Give",
+       "id": 50117
+      },
+      {
+       "text": " me",
+       "id": 668
+      },
+      {
+       "text": " a",
+       "id": 261
+      },
+      {
+       "text": " tip",
+       "id": 10511
+      },
+      {
+       "text": " for",
+       "id": 395
+      },
+      {
+       "text": " remembering",
+       "id": 81227
+      },
+      {
+       "text": " names",
+       "id": 8747
+      },
+      {
+       "text": ".",
+       "id": 13
+      }
+     ],
+     "encoding": "o200k_base",
+     "exact": false
+    }
+   },
+   {
+    "type": "provider.request",
+    "t": 41,
+    "stage": "provider",
+    "payload": {
+     "provider": "OpenAI",
+     "model": "gpt-6-luna",
+     "settings": {
+      "max_output_tokens": 220,
+      "stream": true,
+      "reasoning_effort": "none",
+      "top_logprobs": 5
+     },
+     "instructions": "You are a friendly teacher in an interactive lesson about how AI works. Answer the visitor's question in plain language, in two to four short sentences (under 90 words). Do not use Markdown, lists or headings.",
+     "preview": {
+      "model": "gpt-6-luna",
+      "instructions": "You are a friendly teacher in an interactive lesson about how AI works. Answer the visitor's question in plain language, in two to four short sentences (under 90 words). Do not use Markdown, lists or headings.",
+      "input": "Give me a tip for remembering names.",
+      "max_output_tokens": 220,
+      "stream": true,
+      "reasoning_effort": "none",
+      "top_logprobs": 5,
+      "Authorization": "Bearer sk-…redacted"
+     }
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 550,
+    "stage": "return",
+    "payload": {
+     "text": "Repeat the",
+     "tokens": [
+      {
+       "text": "Repeat",
+       "id": 49704,
+       "top": [
+        {
+         "token": "Try",
+         "p": 0.29
+        },
+        {
+         "token": "Repeat",
+         "p": 0.27
+        },
+        {
+         "token": "Say",
+         "p": 0.21
+        },
+        {
+         "token": "When",
+         "p": 0.13
+        },
+        {
+         "token": "One",
+         "p": 0.07
+        }
+       ],
+       "p": 0.27
+      },
+      {
+       "text": " the",
+       "id": 290,
+       "top": [
+        {
+         "token": " the",
+         "p": 0.62
+        },
+        {
+         "token": " their",
+         "p": 0.28
+        },
+        {
+         "token": " it",
+         "p": 0.06
+        }
+       ],
+       "p": 0.62
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 613,
+    "stage": "return",
+    "payload": {
+     "text": " name back",
+     "tokens": [
+      {
+       "text": " name",
+       "id": 1308,
+       "top": [
+        {
+         "token": " name",
+         "p": 0.96
+        },
+        {
+         "token": " person's",
+         "p": 0.02
+        },
+        {
+         "token": " word",
+         "p": 0.01
+        }
+       ],
+       "p": 0.96
+      },
+      {
+       "text": " back",
+       "id": 1602,
+       "top": [
+        {
+         "token": " back",
+         "p": 0.44
+        },
+        {
+         "token": " out",
+         "p": 0.31
+        },
+        {
+         "token": " aloud",
+         "p": 0.14
+        },
+        {
+         "token": " right",
+         "p": 0.06
+        }
+       ],
+       "p": 0.44
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 666,
+    "stage": "return",
+    "payload": {
+     "text": " right away",
+     "tokens": [
+      {
+       "text": " right",
+       "id": 1849,
+       "top": [
+        {
+         "token": " right",
+         "p": 0.52
+        },
+        {
+         "token": " as",
+         "p": 0.21
+        },
+        {
+         "token": " when",
+         "p": 0.14
+        },
+        {
+         "token": " immediately",
+         "p": 0.08
+        }
+       ],
+       "p": 0.52
+      },
+      {
+       "text": " away",
+       "id": 4194
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 707,
+    "stage": "return",
+    "payload": {
+     "text": ", as",
+     "tokens": [
+      {
+       "text": ",",
+       "id": 11
+      },
+      {
+       "text": " as",
+       "id": 472
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 771,
+    "stage": "return",
+    "payload": {
+     "text": " in \"",
+     "tokens": [
+      {
+       "text": " in",
+       "id": 306
+      },
+      {
+       "text": " \"",
+       "id": 392
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 820,
+    "stage": "return",
+    "payload": {
+     "text": "Nice to",
+     "tokens": [
+      {
+       "text": "Nice",
+       "id": 51469
+      },
+      {
+       "text": " to",
+       "id": 316
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 851,
+    "stage": "return",
+    "payload": {
+     "text": " meet you",
+     "tokens": [
+      {
+       "text": " meet",
+       "id": 4158
+      },
+      {
+       "text": " you",
+       "id": 481
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 910,
+    "stage": "return",
+    "payload": {
+     "text": ", Maya.\"",
+     "tokens": [
+      {
+       "text": ",",
+       "id": 11
+      },
+      {
+       "text": " Maya",
+       "id": 67698
+      },
+      {
+       "text": ".\"",
+       "id": 3692
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 959,
+    "stage": "return",
+    "payload": {
+     "text": " Then link",
+     "tokens": [
+      {
+       "text": " Then",
+       "id": 7801
+      },
+      {
+       "text": " link",
+       "id": 3461
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1024,
+    "stage": "return",
+    "payload": {
+     "text": " it to something vivid",
+     "tokens": [
+      {
+       "text": " it",
+       "id": 480
+      },
+      {
+       "text": " to",
+       "id": 316
+      },
+      {
+       "text": " something",
+       "id": 3543
+      },
+      {
+       "text": " vivid",
+       "id": 61520
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1094,
+    "stage": "return",
+    "payload": {
+     "text": ", like a",
+     "tokens": [
+      {
+       "text": ",",
+       "id": 11
+      },
+      {
+       "text": " like",
+       "id": 1299
+      },
+      {
+       "text": " a",
+       "id": 261
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1157,
+    "stage": "return",
+    "payload": {
+     "text": " feature, a",
+     "tokens": [
+      {
+       "text": " feature",
+       "id": 6286
+      },
+      {
+       "text": ",",
+       "id": 11
+      },
+      {
+       "text": " a",
+       "id": 261
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1192,
+    "stage": "return",
+    "payload": {
+     "text": " place,",
+     "tokens": [
+      {
+       "text": " place",
+       "id": 2475
+      },
+      {
+       "text": ",",
+       "id": 11
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1231,
+    "stage": "return",
+    "payload": {
+     "text": " or a",
+     "tokens": [
+      {
+       "text": " or",
+       "id": 503
+      },
+      {
+       "text": " a",
+       "id": 261
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1278,
+    "stage": "return",
+    "payload": {
+     "text": " famous person",
+     "tokens": [
+      {
+       "text": " famous",
+       "id": 14336
+      },
+      {
+       "text": " person",
+       "id": 1647
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1326,
+    "stage": "return",
+    "payload": {
+     "text": " with the",
+     "tokens": [
+      {
+       "text": " with",
+       "id": 483
+      },
+      {
+       "text": " the",
+       "id": 290
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1364,
+    "stage": "return",
+    "payload": {
+     "text": " same name",
+     "tokens": [
+      {
+       "text": " same",
+       "id": 2684
+      },
+      {
+       "text": " name",
+       "id": 1308
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1420,
+    "stage": "return",
+    "payload": {
+     "text": ". Use",
+     "tokens": [
+      {
+       "text": ".",
+       "id": 13
+      },
+      {
+       "text": " Use",
+       "id": 7649
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1459,
+    "stage": "return",
+    "payload": {
+     "text": " it once",
+     "tokens": [
+      {
+       "text": " it",
+       "id": 480
+      },
+      {
+       "text": " once",
+       "id": 4730
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1514,
+    "stage": "return",
+    "payload": {
+     "text": " more before",
+     "tokens": [
+      {
+       "text": " more",
+       "id": 945
+      },
+      {
+       "text": " before",
+       "id": 2254
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1569,
+    "stage": "return",
+    "payload": {
+     "text": " the conversation ends",
+     "tokens": [
+      {
+       "text": " the",
+       "id": 290
+      },
+      {
+       "text": " conversation",
+       "id": 15681
+      },
+      {
+       "text": " ends",
+       "id": 17095
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1613,
+    "stage": "return",
+    "payload": {
+     "text": ". Saying",
+     "tokens": [
+      {
+       "text": ".",
+       "id": 13
+      },
+      {
+       "text": " Saying",
+       "id": 127798
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1672,
+    "stage": "return",
+    "payload": {
+     "text": ", picturing",
+     "tokens": [
+      {
+       "text": ",",
+       "id": 11
+      },
+      {
+       "text": " pict",
+       "id": 5394
+      },
+      {
+       "text": "uring",
+       "id": 4788
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1728,
+    "stage": "return",
+    "payload": {
+     "text": " and reusing",
+     "tokens": [
+      {
+       "text": " and",
+       "id": 326
+      },
+      {
+       "text": " re",
+       "id": 322
+      },
+      {
+       "text": "using",
+       "id": 1846
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1786,
+    "stage": "return",
+    "payload": {
+     "text": " a name",
+     "tokens": [
+      {
+       "text": " a",
+       "id": 261
+      },
+      {
+       "text": " name",
+       "id": 1308
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1832,
+    "stage": "return",
+    "payload": {
+     "text": " gives your",
+     "tokens": [
+      {
+       "text": " gives",
+       "id": 8967
+      },
+      {
+       "text": " your",
+       "id": 634
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1882,
+    "stage": "return",
+    "payload": {
+     "text": " memory three chances to",
+     "tokens": [
+      {
+       "text": " memory",
+       "id": 8197
+      },
+      {
+       "text": " three",
+       "id": 3407
+      },
+      {
+       "text": " chances",
+       "id": 20973
+      },
+      {
+       "text": " to",
+       "id": 316
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.delta",
+    "t": 1943,
+    "stage": "return",
+    "payload": {
+     "text": " store it.",
+     "tokens": [
+      {
+       "text": " store",
+       "id": 4897
+      },
+      {
+       "text": " it",
+       "id": 480
+      },
+      {
+       "text": ".",
+       "id": 13
+      }
+     ]
+    }
+   },
+   {
+    "type": "output.done",
+    "t": 1961,
+    "stage": "return",
+    "payload": {
+     "text": "Repeat the name back right away, as in \"Nice to meet you, Maya.\" Then link it to something vivid, like a feature, a place, or a famous person with the same name. Use it once more before the conversation ends. Saying, picturing and reusing a name gives your memory three chances to store it.",
+     "usage": {
+      "inputTokens": 59,
+      "outputTokens": 67
+     },
+     "finishReason": "completed",
+     "probabilitiesMeasured": false,
+     "tokenSource": "tokenizer",
+     "serverMs": {
+      "firstToken": 487,
+      "total": 1931
+     }
+    }
+   }
+  ]
+ }
+]
