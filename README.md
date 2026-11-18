@@ -26,7 +26,7 @@ cp .env.example .env        # then set OPENAI_API_KEY
 uv run uvicorn app.main:app --reload --port 8000
 ```
 
-When the backend is running and has a key, the **Live** switch in the page becomes available. If the backend is on another address, set `NEXT_PUBLIC_API_URL` in `web/.env.local` (see `web/.env.example`).
+When the backend is running and has a key, the **Live** switch in the page becomes available. Local development finds it at `http://localhost:8000`. For any other address, set `NEXT_PUBLIC_API_URL` (see `web/.env.example`); when it is unset in production, the site runs in demo mode only.
 
 The API key stays on the server. The browser only ever learns the model name and whether live mode is available.
 

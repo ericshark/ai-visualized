@@ -14,7 +14,10 @@ import { LessonPlayer } from "@/player/LessonPlayer";
 import type { StageTiming } from "@/player/timeline";
 import { usePlayback } from "@/player/usePlayback";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+// Only the local dev server falls back to a backend on this machine. In production
+// the URL must be set explicitly; without it the page stays in demo mode.
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? (process.env.NODE_ENV === "development" ? "http://localhost:8000" : "");
 
 export function LessonApp() {
   const lesson = defaultLesson;

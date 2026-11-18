@@ -33,7 +33,7 @@ function liveHint(health: Health): string {
     case "checking":
       return "Checking whether the backend is running…";
     case "offline":
-      return "Live mode needs the backend. Start it from the backend folder with: uv run uvicorn app.main:app";
+      return "Live mode needs the backend, which is not connected here. To try it, run the project locally with the backend (see the README).";
     case "no-key":
       return "The backend is running but has no OpenAI API key. Add OPENAI_API_KEY to backend/.env.";
     case "ready":

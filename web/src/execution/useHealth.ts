@@ -13,7 +13,7 @@ export type Health =
  * the answer, so every failure just means "live is unavailable".
  */
 export function useHealth(baseUrl: string) {
-  const [health, setHealth] = useState<Health>({ status: "checking" });
+  const [health, setHealth] = useState<Health>({ status: baseUrl ? "checking" : "offline" });
 
   const check = useCallback(
     async (signal?: AbortSignal) => {
@@ -42,6 +42,7 @@ export function useHealth(baseUrl: string) {
   );
 
   useEffect(() => {
+    if (!baseUrl) return;
     const controller = new AbortController();
     // Checked after mount: the answer comes from the network, not from render.
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -54,7 +55,7 @@ export function useHealth(baseUrl: string) {
       controller.abort();
       document.removeEventListener("visibilitychange", onVisible);
     };
-  }, [check]);
+  }, [baseUrl, check]);
 
   return { health, recheck: () => void check() };
 }
