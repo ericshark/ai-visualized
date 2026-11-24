@@ -2,23 +2,22 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/*
- * Design tokens. Light theme only for the MVP.
- * Paper is a barely warm off-white; surfaces are white; one violet-blue accent.
- */
 :root {
-  --paper: #f9f9f6;
-  --surface: #ffffff;
-  --surface-2: #f3f3ef;
-  --ink: #18191d;
-  --ink-2: #4b4d56;
-  --ink-3: #686b75;
-  --line: #e6e5df;
-  --line-2: #d6d5ce;
-  --accent: #5847d1;
-  --accent-strong: #4334b8;
-  --accent-soft: #eeecfb;
-  --accent-line: #c9c3f3;
+  --paper: #f5f3e9;
+  --surface: #fffefa;
+  --surface-2: #ecebe1;
+  --ink: #122038;
+  --ink-2: #3f4c62;
+  --ink-3: #555f70;
+  --line: #d9dbd2;
+  --line-2: #bac2c6;
+  --accent: #2148c4;
+  --accent-strong: #17358f;
+  --accent-soft: #e9eeff;
+  --accent-line: #a7b9f0;
+  --return: #a93f15;
+  --return-soft: #f8e6d8;
+  --map-ground: #eeefe9;
   --ok: #2b7d55;
   --ok-soft: #e4f3ea;
   --warn: #9a6408;
@@ -103,7 +102,7 @@
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-heading: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -162,4 +161,31 @@
     var(--line-2) 0 6px,
     transparent 6px 11px
   );
+}
+
+/* The grid provides a common surface for the two paths and their four stops. */
+.request-map {
+  background-color: var(--map-ground);
+  background-image:
+    linear-gradient(rgb(18 32 56 / 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(18 32 56 / 0.055) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.route-lane::after {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  width: 0.55rem;
+  height: 0.55rem;
+  border: solid currentColor;
+  border-width: 1.5px 1.5px 0 0;
+  content: "";
+  transform: translate(0, -50%) rotate(45deg);
+}
+
+.route-lane-return::after {
+  right: auto;
+  left: 50%;
+  transform: translate(0, -50%) rotate(-135deg);
 }

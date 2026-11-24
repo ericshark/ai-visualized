@@ -6,7 +6,7 @@ import type { StageProps } from "@/lessons/types";
 import { cn } from "@/lib/utils";
 import { beatAt, progressOf } from "@/player/timeline";
 import { useStageTime } from "@/player/useStageTime";
-import { candidatesFor, generationPlan } from "../generation";
+import { candidatesFor, generationPlan, illustrativePieces } from "../generation";
 import { Panel, StageFrame, easeOut, stagger } from "./shared";
 
 export function GenerateStage({ run, beats, elapsed, reduced }: StageProps) {
@@ -27,7 +27,7 @@ export function GenerateStage({ run, beats, elapsed, reduced }: StageProps) {
   else if (inChunks) appended = tokens.length;
   if (reduced) appended = tokens.length;
 
-  const prompt = run.inputTokens?.tokens ?? [];
+  const prompt = run.inputTokens?.tokens ?? illustrativePieces(run.prompt);
   const shownPrompt = prompt.slice(0, 10);
   const current = stepIndex >= 0 ? tokens[stepIndex] : undefined;
   const candidates = current ? candidatesFor(current) : [];
@@ -37,14 +37,14 @@ export function GenerateStage({ run, beats, elapsed, reduced }: StageProps) {
   const badge = hasCandidates ? (
     <SourceBadge kind={measured ? "observed" : "example"} label={measured ? "Measured probabilities" : "Example probabilities"} tip={measured ? "Probabilities returned by the model for your live request." : "Illustrative numbers chosen for this sample, not produced by a model."} />
   ) : (
-    <SourceBadge kind="observed" label="Real tokens" tip="Token boundaries from the tokenizer. This model did not return its probabilities." />
+    <SourceBadge kind="conceptual" label="Illustrative split" tip="Claude streamed text and reported totals. This animation uses illustrative pieces." />
   );
 
   return (
     <StageFrame badges={badge}>
       <div className="flex flex-1 flex-col gap-4">
         <div>
-          <p className="mb-1.5 text-[13px] font-medium text-ink-2">What the model reads</p>
+          <p className="mb-1.5 text-[13px] font-medium text-ink-2">{run.mode === "live" ? "Illustration of text growing" : "What the model reads"}</p>
           <div className="flex flex-wrap items-center gap-1">
             {shownPrompt.map((t, i) => (
               <TokenChip key={`p${i}`} text={t.text} index={i} size="sm" tabIndex={-1} className="opacity-60" />
@@ -110,11 +110,11 @@ export function GenerateStage({ run, beats, elapsed, reduced }: StageProps) {
             <p className="text-center text-[15px] text-ink-2">
               {picked ? (
                 <>
-                  Picked <span className="rounded border border-accent bg-accent px-1.5 py-0.5 font-mono text-white">{showToken(current.text)}</span>
-                  <span className="mt-2 block text-[13.5px] text-ink-3">This model did not return its probabilities, so the other options are not shown.</span>
+                  {run.mode === "live" ? "Illustrative piece " : "Picked "}<span className="rounded border border-accent bg-accent px-1.5 py-0.5 font-mono text-white">{showToken(current.text)}</span>
+                  <span className="mt-2 block text-[13.5px] text-ink-3">Claude provides the answer as text and reports token totals.</span>
                 </>
               ) : (
-                "Predicting the next token…"
+                "Building the answer one piece at a time…"
               )}
             </p>
           )}
@@ -124,15 +124,15 @@ export function GenerateStage({ run, beats, elapsed, reduced }: StageProps) {
           {inChunks && (
             <div>
               <h3 className="mb-3 text-[13px] font-semibold text-ink-2">
-                {tokens.length} tokens left the model in {run.chunks.length} network chunks
+                {run.mode === "live" ? `The browser received ${run.chunks.length} text updates` : `${tokens.length} sample tokens arrived in ${run.chunks.length} network chunks`}
               </h3>
-              <div className="flex max-h-[240px] flex-wrap gap-1.5 overflow-hidden">
+              <div className="flex max-h-[240px] flex-wrap gap-1.5 overflow-auto">
                 {run.chunks.map((chunk, i) => {
                   const t = easeOut(stagger(progressOf(beats, "chunks", ms) * 1.6, i, run.chunks.length, 3));
                   return (
-                    <div key={i} className="flex gap-px rounded-lg border border-accent-line bg-accent-soft/50 p-1" style={{ opacity: t, transform: `translateY(${(1 - t) * 6}px)` }}>
+                    <div key={i} className="flex max-w-full flex-wrap gap-px rounded-lg border border-accent-line bg-accent-soft/50 p-1" style={{ opacity: t, transform: `translateY(${(1 - t) * 6}px)` }}>
                       {(chunk.tokens ?? [{ text: chunk.text }]).map((tok, k) => (
-                        <span key={k} className="rounded-[5px] bg-surface px-1 font-mono text-[11.5px] whitespace-pre text-ink">
+                        <span key={k} className="rounded-[5px] bg-surface px-1 font-mono text-[11.5px] break-all whitespace-pre-wrap text-ink">
                           {showToken(tok.text)}
                         </span>
                       ))}
@@ -140,7 +140,7 @@ export function GenerateStage({ run, beats, elapsed, reduced }: StageProps) {
                   );
                 })}
               </div>
-              <p className="mt-3 text-[14px] text-ink-2">The server groups tokens that arrive close together, so chunks and tokens do not match one to one.</p>
+              <p className="mt-3 text-[14px] text-ink-2">One text update can carry multiple tokens or part of a word.</p>
             </div>
           )}
         </Panel>

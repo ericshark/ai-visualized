@@ -59,7 +59,7 @@ export function StageNotice({
             )}
             {onUseDemo && (
               <button type="button" onClick={onUseDemo} className={`${action} border-line-2 bg-surface text-ink hover:border-ink-3 hover:bg-surface-2`}>
-                Use demo mode
+                Try a sample
               </button>
             )}
           </div>

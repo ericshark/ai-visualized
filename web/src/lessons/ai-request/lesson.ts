@@ -53,14 +53,14 @@ const extras: Extras[] = [
   {
     rail: () => ({ active: ["provider", "model"] }),
     beats: () => fixed(["show", 1400], ["split", 2400], ["ids", 1800], ["explore", 3000]),
-    ready: (run) => !!run.inputTokens,
+    ready: (run) => Boolean(run.inputTokens || (run.mode === "live" && run.provider)),
     waitingFor: "the tokens",
     Visual: TokensStage,
   },
   {
     rail: () => ({ active: ["model"] }),
     beats: () => fixed(["embed", 3000], ["layer0", 1700], ["layer1", 1700], ["layer2", 1700], ["predict", 3200]),
-    ready: (run) => !!run.inputTokens,
+    ready: (run) => Boolean(run.inputTokens || (run.mode === "live" && run.provider)),
     waitingFor: "the tokens",
     Visual: ModelStage,
   },

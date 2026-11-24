@@ -1,6 +1,10 @@
-import type { Candidate, OutputToken } from "@/execution/events";
+import type { Candidate, OutputToken, Token } from "@/execution/events";
 import { outputTokens, type RunState } from "@/execution/runReducer";
 import type { Beat } from "@/player/timeline";
+
+export function illustrativePieces(text: string): Token[] {
+  return [...text.matchAll(/\s?[\p{L}\p{N}]{1,12}|\s?[^\s\p{L}\p{N}]|\s{1,12}/gu)].map(([piece]) => ({ text: piece }));
+}
 
 export const STEP_MS = 1800;
 
@@ -15,7 +19,8 @@ export interface GenerationPlan {
 }
 
 export function generationPlan(run: RunState): GenerationPlan {
-  const tokens = outputTokens(run);
+  const reported = outputTokens(run);
+  const tokens: OutputToken[] = !reported.length && run.mode === "live" ? illustrativePieces(run.text) : reported;
   let leading = 0;
   while (leading < tokens.length && tokens[leading].top?.length) leading += 1;
   const hasCandidates = leading > 0;

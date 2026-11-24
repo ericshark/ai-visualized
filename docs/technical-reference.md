@@ -1,85 +1,36 @@
-# AI Under the Hood
+# Technical reference
 
-An interactive lesson that follows one question from the moment you press Send to the moment the answer appears: your browser, the app's server, the AI provider, the model, and back.
+The Next.js App Router serves the player and the live API from the same origin. Sample runs use checked-in fixtures. Claude Live sends one question at a time and streams the response into the same lesson player.
 
-It is built to be watched, not read. Each of the eight stages animates what happens, explains it in a sentence or two, and keeps the technical detail behind a **Go deeper** panel.
+## Interfaces
 
-## Run it
+| Endpoint | Contract |
+| --- | --- |
+| `GET /api/health` | Reports live availability, provider, model ID, and maximum input length. Availability means a key is configured. |
+| `POST /api/chat/stream` | Accepts JSON with a single `prompt` string. Returns server-sent events for request receipt, validation, provider request preview, text updates, and completion or an error. |
 
-Demo mode needs only the frontend and no API key.
+Only the Claude request includes the key. The provider preview contains the request body and public generation settings. The app sends no tools or conversation history. Deployment cost controls are in the [deployment guide](DEPLOYMENT.md).
 
-```bash
-cd web
-pnpm install
-pnpm dev
-```
-
-Open http://localhost:3000, pick a question and press **Send**.
-
-### Live mode (optional)
-
-Live mode sends your own question through the FastAPI backend to OpenAI and shows the real response and timings.
-
-```bash
-cd backend
-cp .env.example .env        # then set OPENAI_API_KEY
-uv run uvicorn app.main:app --reload --port 8000
-```
-
-When the backend is running and has a key, the **Live** switch in the page becomes available. Local development finds it at `http://localhost:8000`. For any other address, set `NEXT_PUBLIC_API_URL` (see `web/.env.example`); when it is unset in production, the site runs in demo mode only.
-
-The API key stays on the server. The browser only ever learns the model name and whether live mode is available.
-
-## What is real and what is not
-
-Every visual carries a label:
+## What the lesson shows
 
 | Label | Meaning |
 | --- | --- |
-| **Sample data** | Written for the lesson. Token boundaries and IDs come from a real tokenizer, but the answer text, timings and next-token probabilities are examples. |
-| **Measured** | Captured from your live request: server events, browser-side timings, and next-token probabilities when the model returns them. |
-| **Simulation** | A picture of something the API does not expose, such as what happens inside the model. Drawn with dashed outlines and never presented as a measurement. |
+| Sample data | Prepared answers, timings, and next-token probabilities. Token boundaries and IDs in the fixtures came from the sample tokenizer. |
+| Measured | Live server events, streamed answer, timings, and usage totals reported by Claude. |
+| Simulation | Illustrative token boundaries and model internals. Claude does not expose token IDs, exact token boundaries, or next-token probabilities in this stream. |
 
-Other accuracy notes the lesson makes explicit: tokenization depends on the model, network chunks are not tokens, the model's inference is not training, and hidden reasoning is not observable.
+The playback clock and the request event log are independent. The player can pause, step, and replay a run without making a new request. With reduced motion, each stage opens in its final state and users step through manually.
 
-## Layout
+## Working on the lesson
 
-```
-web/                          Next.js (App Router), TypeScript, Tailwind, shadcn/ui, Motion
-  src/execution/              run events, reducer, demo and live adapters, SSE parser
-  src/player/                 stage controller (pure reducer), clock hook, rail, controls
-  src/lessons/                lesson definitions; one folder per lesson
-    ai-request/content.ts       all lesson copy and technical detail
-    ai-request/stages/          one visualization per stage, no prose inside
-    ai-request/fixtures.json    sample runs for demo mode (generated)
-backend/                      FastAPI
-  app/main.py                 GET /api/health, POST /api/chat/stream (SSE)
-  app/provider.py             OpenAI Responses API stream, normalized
-  app/limits.py               rate limit, daily cap, concurrency cap
-  scripts/make_fixtures.py    regenerates the demo sample runs
+The `web/src/execution/` modules define and consume normalized run events. The player is in `web/src/player/`. The lesson’s copy, visuals, and sample fixtures are in `web/src/lessons/ai-request/`. To add a lesson, create its stage definitions and visualizations, then add the lesson to `lessons/registry.ts`.
+
+```sh
+cd web
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
 ```
 
-### How it fits together
-
-- **Two timelines.** The lesson's playback clock (what you watch) and the run's event log (what the request produced) are separate. Stages read whatever the run has produced; nothing in the model-internals stages is timed against network events.
-- **One event model.** Every fact arrives as a typed event with a source of `demo`, `observed` or `conceptual`. The demo adapter replays a recorded event log; the live adapter turns the backend's server-sent events into the same events.
-- **Deterministic playback.** Each stage is a plain function of time, so it can pause, resume, step back and replay exactly. With reduced motion, stages show their finished state and nothing autoplays.
-
-### Adding a lesson
-
-Create `web/src/lessons/<id>/` with content, stage visualizations and a `Lesson` object (see `lessons/types.ts`), then add it to `lessons/registry.ts`. The player, rail, controls and event model are lesson-agnostic.
-
-## Cost protection
-
-The backend is not a general proxy to a paid model. The model, instructions and answer length are fixed server-side, input is capped (500 characters by default), and there is a per-address rate limit, a daily request cap, a concurrency cap and a request timeout. All are set in `backend/.env`. These limits live in memory in one process: fine for local use, but revisit them (shared storage, authentication) before any public deployment.
-
-## Checks
-
-```bash
-cd web && pnpm lint && pnpm typecheck && pnpm test && pnpm build
-cd backend && uv run pytest
-```
-
-## Keyboard
-
-`←` / `→` previous and next stage, `Space` play or pause, `R` replay from the start.
+Use Left and Right Arrow to step through a run, Space to play or pause, and R to replay. The keyboard shortcuts leave the prompt field available for normal text editing.

@@ -32,7 +32,7 @@ export function StageFrame({
   return (
     <div
       className={cn(
-        "relative flex min-h-[420px] flex-col rounded-2xl border border-line bg-surface p-4 shadow-raised sm:p-6 lg:min-h-[500px]",
+        "relative flex min-h-[320px] flex-col rounded-2xl border border-line bg-surface p-4 sm:p-6 lg:min-h-[400px]",
         className,
       )}
     >

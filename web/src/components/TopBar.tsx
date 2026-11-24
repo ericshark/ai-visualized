@@ -1,14 +1,18 @@
 import { LogoMark } from "./NodeIcons";
 
-export function TopBar({ lessonTitle }: { lessonTitle: string }) {
+export function TopBar() {
   return (
-    <header className="border-b border-line bg-paper/80 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <div className="flex items-center gap-2.5 text-ink">
-          <LogoMark className="text-accent" />
-          <span className="text-[15px] font-semibold tracking-tight">AI Under the Hood</span>
+    <header className="border-b border-line bg-surface">
+      <div className="mx-auto flex h-15 max-w-7xl items-center justify-between px-5 sm:px-8">
+        <div className="inline-flex items-center gap-3 font-semibold tracking-tight text-ink">
+          <span className="grid size-8 place-items-center rounded-lg bg-accent text-white">
+            <LogoMark />
+          </span>
+          AI Under the Hood
         </div>
-        <p className="hidden truncate text-[14px] text-ink-2 sm:block">{lessonTitle}</p>
+        <a href="#journey" className="text-sm font-medium text-ink-2 underline-offset-4 hover:text-accent hover:underline">
+          Request map
+        </a>
       </div>
     </header>
   );

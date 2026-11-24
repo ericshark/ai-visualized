@@ -28,7 +28,7 @@ export function PlaybackControls({ status, reduced, waitingFor, canBack, onBack,
     <div
       role="group"
       aria-label="Playback controls"
-      className="flex items-center gap-2 rounded-xl border border-line bg-surface/95 p-2 shadow-float backdrop-blur"
+      className="flex items-center gap-2 rounded-xl border border-line bg-surface p-2"
     >
       <Tip content="Previous stage (←)">
         <button type="button" onClick={onBack} disabled={!canBack} className={cn(base, quiet)} aria-label="Back">
@@ -59,7 +59,7 @@ export function PlaybackControls({ status, reduced, waitingFor, canBack, onBack,
           className={cn(base, reduced ? "min-w-24 border-accent bg-accent text-white hover:bg-accent-strong" : quiet)}
           aria-label="Next"
         >
-          <span className="hidden sm:inline">Next</span>
+          <span>Next</span>
           <ChevronRight className="size-4" />
         </button>
       </Tip>

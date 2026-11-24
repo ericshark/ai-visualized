@@ -26,19 +26,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm audit --audit-level critical
       - run: pnpm audit --prod --audit-level high
+      - run: pnpm lint
+      - run: pnpm test
       - run: pnpm run build
-
-  backend-dependencies:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          persist-credentials: false
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
-        with:
-          python-version: '3.12'
-      - run: pip install uv pip-audit
-      - working-directory: backend
-        run: |
-          uv export --locked --no-dev --no-emit-project --no-hashes -o /tmp/backend-requirements.txt
-          pip-audit --no-deps --disable-pip -r /tmp/backend-requirements.txt

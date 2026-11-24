@@ -10,8 +10,13 @@ export interface SseFrame {
 
 export function createSseParser() {
   let buffer = "";
+  let skipLeadingNewline = false;
 
   return function push(text: string): SseFrame[] {
+    if (text.length === 0) return [];
+    const startsWithPairedNewline = skipLeadingNewline && text.startsWith("\n");
+    skipLeadingNewline = text.endsWith("\r");
+    if (startsWithPairedNewline) text = text.slice(1);
     buffer += text.replace(/\r\n?/g, "\n");
     const frames: SseFrame[] = [];
     let boundary = buffer.indexOf("\n\n");

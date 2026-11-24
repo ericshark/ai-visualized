@@ -21,20 +21,20 @@ const KNOWN: EventType[] = [
 ];
 
 interface Options {
-  baseUrl: string;
+  baseUrl?: string;
   fetch?: typeof fetch;
   now?: () => number;
 }
 
 /**
- * Sends a real request to the FastAPI backend and turns its SSE stream into
+ * Sends a real request to the lesson server and turns its SSE stream into
  * run events. Times are measured in the browser, from the moment of Send.
  */
 export function createLiveAdapter({
-  baseUrl,
+  baseUrl = "",
   fetch: fetchImpl = (...args) => globalThis.fetch(...args),
   now = () => performance.now(),
-}: Options): ExecutionAdapter {
+}: Options = {}): ExecutionAdapter {
   return {
     start({ runId, prompt }, onEvent) {
       const controller = new AbortController();
@@ -82,7 +82,7 @@ export function createLiveAdapter({
           });
         } catch {
           if (!controller.signal.aborted) {
-            fail("The app server could not be reached. Check that the backend is running.", "network");
+            fail("The lesson server could not be reached. Check your connection and try again.", "network");
           }
           return;
         }

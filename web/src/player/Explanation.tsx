@@ -52,7 +52,7 @@ export function Explanation({ stage, index, total, run, open, onOpenChange }: Pr
       initial={reduce ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-2xl border border-line bg-surface p-5 shadow-raised sm:p-6"
+      className="rounded-2xl border border-line bg-surface p-5 sm:p-6"
     >
       {/* Announced to screen readers whenever the stage changes. */}
       <div aria-live="polite" aria-atomic="true">

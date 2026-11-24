@@ -9,7 +9,7 @@ import { outputTokens, type RunState } from "@/execution/runReducer";
 import type { DeeperBlock, NodeId } from "../types";
 
 export const NODES: Record<NodeId, { name: string; detail: string }> = {
-  browser: { name: "Your browser", detail: "The app you type into, running on your device." },
+  browser: { name: "Browser", detail: "The app you type into, running on your device." },
   backend: { name: "App server", detail: "The app's own computer. It keeps the secret API key and the rules." },
   provider: { name: "AI provider", detail: "The company that hosts the model, reached through its API." },
   model: { name: "Model", detail: "The language model itself, running on the provider's hardware." },
@@ -74,27 +74,13 @@ export const COPY: StageCopy[] = [
     simple:
       "The request crosses the internet to the app's server, which checks it and prepares it for the AI.",
     why: "The server is where the app keeps what users must not touch: its secret key, its instructions and its limits.",
-    changes: "Your question is checked and wrapped with the app's instructions, settings and secret key.",
+    changes: "The server checks your question and adds the app’s instructions and settings. It uses its key to authenticate with the provider.",
     deeper: (run) => [
       {
         kind: "text",
-        title: "A FastAPI endpoint",
+        title: "A Next.js route handler",
         body:
-          "This app's backend is a small Python service built with FastAPI. One endpoint, POST /api/chat/stream, receives your question, validates it, and opens a streaming connection back to your browser.",
-      },
-      {
-        kind: "code",
-        title: "Simplified endpoint",
-        code: `@app.post("/api/chat/stream")
-async def chat_stream(body: ChatRequest, request: Request):
-    prompt = body.prompt.strip()
-    if not prompt:
-        raise HTTPException(422, "Type a question first.")
-    if len(prompt) > MAX_INPUT_CHARS:
-        raise HTTPException(422, "Keep your question short.")
-    if limiter.acquire(request.client.host):
-        raise HTTPException(429, "Too many requests.")
-    return StreamingResponse(events(prompt), media_type="text/event-stream")`,
+          "The route POST /api/chat/stream receives your question, checks its length, and opens a streaming response to your browser. The API key stays on the app server.",
       },
       {
         kind: "facts",
@@ -105,7 +91,7 @@ async def chat_stream(body: ChatRequest, request: Request):
         kind: "text",
         title: "Protecting a paid API",
         body:
-          "Every request to the model costs money. The server fixes the model, the instructions and the maximum answer length, and limits how many requests one connection can make. Without these checks, anyone could use the app's key for anything.",
+          "Every request to the model costs money. The app sets the model, instructions, and answer length on the server. A public deployment can also limit requests at its firewall and cap spending with the provider.",
       },
     ],
   },
@@ -124,7 +110,7 @@ async def chat_stream(body: ChatRequest, request: Request):
           ? ([
               {
                 kind: "code",
-                title: `Request to ${p.provider}'s Responses API`,
+                title: `Request to ${p.provider}`,
                 code: json(p.preview),
                 caption: "The API key is sent in a header and is shown redacted. It never leaves the server.",
               },
@@ -182,22 +168,24 @@ async def chat_stream(body: ChatRequest, request: Request):
               { label: "Tokenizer", value: t.encoding },
             ],
           },
-          { kind: "code", title: "What the model receives as IDs", code: `[${t.tokens.map((x) => x.id).join(", ")}]` },
+          { kind: "code", title: t.exact ? "Token IDs" : "Example token IDs", code: `[${t.tokens.map((x) => x.id).join(", ")}]` },
         );
         if (!t.exact) {
           blocks.push({
             kind: "text",
             title: "A close estimate",
-            body: `These tokens come from ${t.encoding}, the tokenizer of OpenAI's GPT-4o and GPT-5 models. The tokenizer library does not list the configured model, so its exact boundaries may differ slightly.`,
+            body: `The sample uses ${t.encoding} for its token boundaries and IDs. A different tokenizer can split the same text in different places.`,
           });
         }
       }
       const usage = run.done?.usage;
-      if (usage && t) {
+      if (usage) {
         blocks.push({
           kind: "text",
-          title: "Why the provider counts more",
-          body: `The provider counted ${usage.inputTokens} input tokens, not ${t.tokens.length}. The app's instructions and the formatting that separates messages are tokens too.`,
+          title: run.mode === "live" ? "Provider token total" : "Sample provider token total",
+          body: run.mode === "live"
+            ? `The provider reported ${usage.inputTokens} input tokens. The total includes the app’s instructions and message formatting.`
+            : `The sample records ${usage.inputTokens} input tokens for the whole request, including the app’s instructions and message formatting.`,
         });
       }
       return blocks;
@@ -266,7 +254,7 @@ async def chat_stream(body: ChatRequest, request: Request):
           kind: "text",
           title: "Tokens are not network chunks",
           body:
-            "The model produces tokens; the network carries chunks. This app's server merges tokens that arrive close together into one chunk to save overhead, so a chunk can hold several tokens.",
+            "The model produces tokens; the network carries chunks. The browser receives text updates as they arrive. A text update can include multiple tokens or part of a word.",
         },
         {
           kind: "facts",
@@ -315,11 +303,11 @@ async def chat_stream(body: ChatRequest, request: Request):
           kind: "facts",
           title: run.mode === "live" ? "Timing measured in your browser" : "Sample timing",
           items: [
-            { label: "Time to first token", value: seconds(run.firstChunkMs) },
+            { label: "Time to first text", value: seconds(run.firstChunkMs) },
             { label: "Total time", value: seconds(run.totalMs) },
             { label: "Chunks received", value: String(run.chunks.length) },
             ...(run.done?.serverMs?.firstToken != null
-              ? [{ label: "First token, at the server", value: seconds(run.done.serverMs.firstToken) }]
+              ? [{ label: "First text, at the server", value: seconds(run.done.serverMs.firstToken) }]
               : []),
           ],
         },
@@ -327,7 +315,7 @@ async def chat_stream(body: ChatRequest, request: Request):
           kind: "text",
           title: "What the first wait contains",
           body:
-            "Time to first token includes the trip to the server and the provider, waiting for capacity, and the model reading all of your input tokens before it can predict the first output token.",
+            "Time to first text includes the trip to the server and the provider, waiting for capacity, and the model reading all of your input tokens before it can predict the first output token.",
         },
       ];
     },
@@ -351,7 +339,7 @@ async def chat_stream(body: ChatRequest, request: Request):
         kind: "text",
         title: "What you saw, and how",
         body:
-          "Requests, checks, settings, tokens and timings are things an app can observe. The inside of the model was a simulation. In demo mode the answers and timings are samples written for the lesson; in live mode they are measured from your request.",
+          "In Sample mode the lesson uses prepared answers and timings. Claude Live shows your actual answer, timing, and reported token totals. The diagrams illustrate how text can split into tokens and how the model processes them.",
       },
     ],
   },

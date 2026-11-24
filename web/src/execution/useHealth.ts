@@ -12,14 +12,14 @@ export type Health =
  * Asks the backend whether live mode is possible. Demo mode never depends on
  * the answer, so every failure just means "live is unavailable".
  */
-export function useHealth(baseUrl: string) {
-  const [health, setHealth] = useState<Health>({ status: baseUrl ? "checking" : "offline" });
+export function useHealth() {
+  const [health, setHealth] = useState<Health>({ status: "checking" });
 
   const check = useCallback(
     async (signal?: AbortSignal) => {
       const timeout = AbortSignal.timeout(2500);
       try {
-        const response = await fetch(`${baseUrl}/api/health`, {
+        const response = await fetch("/api/health", {
           signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
         });
         if (!response.ok) throw new Error("bad status");
@@ -38,11 +38,10 @@ export function useHealth(baseUrl: string) {
         if (!signal?.aborted) setHealth({ status: "offline" });
       }
     },
-    [baseUrl],
+    [],
   );
 
   useEffect(() => {
-    if (!baseUrl) return;
     const controller = new AbortController();
     // Checked after mount: the answer comes from the network, not from render.
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -55,7 +54,7 @@ export function useHealth(baseUrl: string) {
       controller.abort();
       document.removeEventListener("visibilitychange", onVisible);
     };
-  }, [baseUrl, check]);
+  }, [check]);
 
-  return { health, recheck: () => void check() };
+  return health;
 }

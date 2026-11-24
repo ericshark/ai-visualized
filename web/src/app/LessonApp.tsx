@@ -14,23 +14,19 @@ import { LessonPlayer } from "@/player/LessonPlayer";
 import type { StageTiming } from "@/player/timeline";
 import { usePlayback } from "@/player/usePlayback";
 
-// Only the local dev server falls back to a backend on this machine. In production
-// the URL must be set explicitly; without it the page stays in demo mode.
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? (process.env.NODE_ENV === "development" ? "http://localhost:8000" : "");
+const demo = createDemoAdapter(EXAMPLES);
+const live = createLiveAdapter();
 
 export function LessonApp() {
   const lesson = defaultLesson;
-  const demo = useMemo(() => createDemoAdapter(EXAMPLES), []);
-  const live = useMemo(() => createLiveAdapter({ baseUrl: API_URL }), []);
   const { run, start, cancel } = useRun({ demo, live });
-  const { health } = useHealth(API_URL);
+  const health = useHealth();
 
   const [mode, setMode] = useState<Mode>("demo");
   const [exampleId, setExampleId] = useState(EXAMPLES[0].id);
   const [livePrompt, setLivePrompt] = useState(EXAMPLES[0].prompt);
   const [deeperOpen, setDeeperOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Live mode is only possible while the backend reports a key.
   const effectiveMode: Mode = mode === "live" && health.status === "ready" ? "live" : "demo";
@@ -59,8 +55,11 @@ export function LessonApp() {
   );
 
   const send = useCallback(
-    () => begin(effectiveMode, effectiveMode === "live" ? livePrompt.trim() : example.prompt),
-    [begin, effectiveMode, livePrompt, example.prompt],
+    () => {
+      if (run.status === "running" && run.mode === "live") return;
+      begin(effectiveMode, effectiveMode === "live" ? livePrompt.trim() : example.prompt);
+    },
+    [begin, effectiveMode, livePrompt, example.prompt, run.mode, run.status],
   );
 
   const askAnother = useCallback(() => {
@@ -81,22 +80,22 @@ export function LessonApp() {
 
   return (
     <>
-      <TopBar lessonTitle={lesson.title} />
-      <main className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
-        <section className="grid gap-8 pt-10 pb-10 sm:pt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,540px)] lg:items-end lg:gap-14 lg:pb-14">
+      <TopBar />
+      <main className="mx-auto max-w-7xl px-5 pb-16 sm:px-8">
+        <section className="grid gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-center lg:gap-10">
           <div>
-            <h1 className="max-w-xl text-[38px] leading-[1.05] font-semibold tracking-[-0.035em] text-balance text-ink sm:text-[52px]">
-              {lesson.title}
+            <h1 className="max-w-[14ch] font-heading text-[clamp(2.55rem,6.3vw,5.5rem)] leading-[0.98] font-semibold tracking-[-0.035em] text-ink">
+              Follow an AI request.
             </h1>
             <p className="mt-4 max-w-md text-[17px] leading-relaxed text-ink-2 sm:text-[18px]">
-              Press Send and follow one question from your screen to a language model and back, one stage at a time.
+              Send a question and see what happens between pressing Send and getting an answer.
             </p>
           </div>
           <Composer
             mode={effectiveMode}
             onModeChange={setMode}
             health={health}
-            examples={EXAMPLES.map((e) => ({ id: e.id, label: e.label }))}
+            examples={EXAMPLES}
             exampleId={example.id}
             onPickExample={pickExample}
             prompt={prompt}
@@ -115,15 +114,14 @@ export function LessonApp() {
           playback={playback}
           deeperOpen={deeperOpen}
           onDeeperChange={setDeeperOpen}
-          onSend={send}
           onReplay={startPlayback}
           onAskAnother={askAnother}
           onRetry={send}
           onUseDemo={useDemo}
         />
       </main>
-      <footer className="border-t border-line py-6 text-center text-[13px] text-ink-3">
-        Every visual is labeled as sample data, measured, or a simulation. Model internals are never shown as if measured.
+      <footer className="border-t border-line px-5 py-6 text-center text-sm text-ink-2">
+        The lesson labels sample data, live measurements, and simulations throughout.
       </footer>
     </>
   );

@@ -8,7 +8,7 @@ import type { StageProps } from "@/lessons/types";
 import { progressOf } from "@/player/timeline";
 import { useStageTime } from "@/player/useStageTime";
 import { MODEL_PHASES } from "../content";
-import { candidatesFor } from "../generation";
+import { candidatesFor, illustrativePieces } from "../generation";
 import { StageFrame, easeInOut, easeOut, lerp, seeded, stagger } from "./shared";
 
 const NARROW = "(max-width: 639px)";
@@ -48,7 +48,7 @@ export function ModelStage({ run, beats, elapsed, reduced }: StageProps) {
   const H = narrow ? 430 : 400;
   const max = narrow ? 5 : 8;
 
-  const input = run.inputTokens?.tokens ?? [];
+  const input = run.inputTokens?.tokens ?? illustrativePieces(run.prompt);
   const source = input.length ? input : [{ text: run.prompt, id: 1 }];
   const columns: Column[] =
     source.length > max

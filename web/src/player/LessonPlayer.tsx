@@ -3,7 +3,6 @@
 import { useEffect, useMemo } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import type { RunState } from "@/execution/runReducer";
-import { StageFrame } from "@/lessons/ai-request/stages/shared";
 import type { Lesson } from "@/lessons/types";
 import { Explanation } from "./Explanation";
 import { JourneyRail } from "./JourneyRail";
@@ -18,7 +17,6 @@ interface Props {
   playback: Playback;
   deeperOpen: boolean;
   onDeeperChange: (open: boolean) => void;
-  onSend: () => void;
   onReplay: () => void;
   onAskAnother: () => void;
   onRetry: () => void;
@@ -31,7 +29,6 @@ export function LessonPlayer({
   playback,
   deeperOpen,
   onDeeperChange,
-  onSend,
   onReplay,
   onAskAnother,
   onRetry,
@@ -67,35 +64,19 @@ export function LessonPlayer({
 
   const railSpec = idle ? { active: [] } : stage.rail(run, beats);
 
-  let canvas;
-  if (idle) {
-    canvas = (
-      <StageFrame className="items-center justify-center text-center">
-        <p className="text-[18px] font-medium text-ink">Your journey starts here</p>
-        <p className="mx-auto mt-1.5 max-w-sm text-[15px] leading-snug text-ink-2">
-          Pick a question above and press Send. The lesson follows it through all eight stages.
-        </p>
-        <button
-          type="button"
-          onClick={onSend}
-          className="mt-5 inline-flex h-10 items-center rounded-lg border border-accent bg-accent px-5 text-sm font-medium text-white transition-colors hover:bg-accent-strong"
-        >
-          Send the question above
-        </button>
-      </StageFrame>
-    );
-  } else if (failed) {
+  let canvas = null;
+  if (!idle && failed) {
     canvas = (
       <StageNotice
         kind={run.status === "cancelled" ? "cancelled" : "error"}
         message={run.error?.message}
-        onRetry={run.mode === "live" || run.status === "cancelled" ? onRetry : undefined}
+        onRetry={run.error?.retryable || run.status === "cancelled" ? onRetry : undefined}
         onUseDemo={run.mode === "live" ? onUseDemo : undefined}
       />
     );
-  } else if (!ready) {
+  } else if (!idle && !ready) {
     canvas = <StageNotice kind="waiting" waitingFor={stage.waitingFor} />;
-  } else {
+  } else if (!idle) {
     canvas = (
       <motion.div
         key={stage.id}
@@ -116,39 +97,50 @@ export function LessonPlayer({
     );
   }
 
+  const liveRun = run.mode === "live" && !idle;
+
   return (
-    <section id="journey" aria-label={lesson.title} className="scroll-mt-4 space-y-5">
-      {!idle && (
+    <section id="journey" aria-labelledby="request-map-heading" className="scroll-mt-4">
+      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h2 id="request-map-heading" className="font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
+          Request map
+        </h2>
+        <p className="text-sm text-ink-2">
+          {idle ? "Send a question to start the walkthrough." : "Select a stage to inspect it."}
+        </p>
+      </div>
+      <div className={liveRun ? "grid gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]" : undefined}>
+        <JourneyRail spec={railSpec} beats={beats} elapsed={elapsed} reduced={reduced} idle={idle} />
+        {liveRun && <LiveAnswer run={run} />}
+      </div>
+      <div className="mt-4">
         <StageProgress
           stages={lesson.stages}
           current={index}
           beats={beats}
           elapsed={elapsed}
           reduced={reduced}
+          idle={idle}
           onSelect={playback.goTo}
         />
-      )}
+      </div>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
-        <div className="min-w-0 space-y-4">
-          <JourneyRail spec={railSpec} beats={beats} elapsed={elapsed} reduced={reduced} idle={idle} />
-          {canvas}
-        </div>
-
-        <div className="lg:sticky lg:top-6">
-          {idle ? (
-            <div className="rounded-2xl border border-line bg-surface p-5 shadow-raised sm:p-6">
-              <h2 className="text-[18px] font-semibold tracking-tight text-ink">Eight stages, one question</h2>
-              <ol className="mt-3 space-y-2">
-                {lesson.stages.map((s, i) => (
-                  <li key={s.id} className="flex gap-3 text-[14.5px] text-ink-2">
-                    <span className="w-4 shrink-0 text-ink-3 tabular-nums">{i + 1}</span>
-                    {s.title}
-                  </li>
-                ))}
-              </ol>
-            </div>
-          ) : (
+      {!idle && (
+        <>
+          <div className="my-4">
+            <PlaybackControls
+              status={status}
+              reduced={reduced}
+              waitingFor={waiting && !failed ? stage.waitingFor : null}
+              canBack={index > 0}
+              onBack={back}
+              onToggle={toggle}
+              onNext={next}
+              onReplay={onReplay}
+            />
+          </div>
+          <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.51fr)] lg:items-start">
+            <div className="min-w-0">{canvas}</div>
             <Explanation
               stage={stage}
               index={index}
@@ -157,23 +149,34 @@ export function LessonPlayer({
               open={deeperOpen}
               onOpenChange={onDeeperChange}
             />
-          )}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
 
-      {!idle && (
-        <div className="sticky bottom-4 z-30">
-          <PlaybackControls
-            status={status}
-            reduced={reduced}
-            waitingFor={waiting && !failed ? stage.waitingFor : null}
-            canBack
-            onBack={back}
-            onToggle={toggle}
-            onNext={next}
-            onReplay={onReplay}
-          />
-        </div>
+function LiveAnswer({ run }: { run: RunState }) {
+  const usage = run.done?.usage;
+  const status = run.status === "done" ? "Complete" : run.status === "running" ? "Streaming…" : run.status === "cancelled" ? "Stopped" : "Interrupted";
+  const seconds = (ms?: number) => ms == null ? "—" : `${(ms / 1000).toFixed(2)} s`;
+
+  return (
+    <section aria-labelledby="live-answer-heading" className="min-w-0 rounded-xl border border-line-2 bg-surface px-4 py-3 sm:px-5">
+      <div className="flex items-center justify-between gap-2">
+        <h3 id="live-answer-heading" className="text-sm font-semibold">Claude’s answer</h3>
+        <span role="status" className="text-xs font-medium text-[var(--return)]">{status}</span>
+      </div>
+      <p className="mt-2 max-h-44 overflow-auto text-sm leading-relaxed break-words whitespace-pre-wrap text-ink-2" tabIndex={run.text ? 0 : undefined}>
+        {run.text || (run.status === "running" ? "Waiting for the first words…" : run.error?.message || "The request ended before text arrived.")}
+      </p>
+      {run.text && run.error && <p className="mt-2 text-xs text-danger">{run.error.message}</p>}
+      {run.status === "done" && (
+        <dl aria-label="Live measurements" className="mt-3 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-2 text-xs text-ink-2">
+          <div><dt>First text</dt><dd className="font-mono font-medium tabular-nums text-ink">{seconds(run.firstChunkMs)}</dd></div>
+          <div><dt>Total time</dt><dd className="font-mono font-medium tabular-nums text-ink">{seconds(run.totalMs)}</dd></div>
+          {usage && <div><dt>Input / output tokens</dt><dd className="font-mono font-medium tabular-nums text-ink">{usage.inputTokens} / {usage.outputTokens}</dd></div>}
+        </dl>
       )}
     </section>
   );

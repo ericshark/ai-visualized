@@ -67,7 +67,7 @@ export function ReturnStage({ run, beats, elapsed, reduced }: StageProps) {
 
           <div className="grid grid-cols-2 gap-3" style={{ opacity: summary, transform: `translateY(${(1 - summary) * 8}px)` }}>
             <Panel tone="accent">
-              <p className="text-[13px] text-ink-2">Time to first token</p>
+              <p className="text-[13px] text-ink-2">Time to first text</p>
               <p className="mt-1 font-mono text-[20px] font-medium text-ink">{seconds(first)}</p>
             </Panel>
             <Panel>

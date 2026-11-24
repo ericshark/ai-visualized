@@ -23,48 +23,42 @@ interface Props {
   beats: Beat[];
   elapsed: MotionValue<number>;
   reduced: boolean;
+  idle: boolean;
   onSelect: (index: number) => void;
 }
 
-export function StageProgress({ stages, current, beats, elapsed, reduced, onSelect }: Props) {
+export function StageProgress({ stages, current, beats, elapsed, reduced, idle, onSelect }: Props) {
   return (
     <nav aria-label="Lesson stages">
-      <ol className="flex gap-1.5 sm:gap-2">
+      <ol className="grid grid-cols-4 overflow-hidden rounded-xl border border-line-2 bg-surface sm:grid-cols-8">
         {stages.map((stage, i) => {
-          const done = i < current;
-          const active = i === current;
+          const done = !idle && i < current;
+          const active = !idle && i === current;
           return (
-            <li key={stage.id} className="min-w-0 flex-1">
+            <li key={stage.id} className="min-w-0 border-line nth-[n+5]:border-t not-nth-[4n]:border-r sm:nth-[n+5]:border-t-0 sm:not-last:border-r">
               <button
                 type="button"
                 onClick={() => onSelect(i)}
+                disabled={idle}
                 aria-current={active ? "step" : undefined}
                 aria-label={`Stage ${i + 1}: ${stage.title}`}
-                className="group flex w-full flex-col gap-2 rounded-md py-1 text-left"
+                className={cn(
+                  "relative flex min-h-12 w-full items-center gap-1.5 px-2 text-left text-xs focus-visible:-outline-offset-3 sm:px-3",
+                  active ? "bg-accent-soft font-semibold text-accent-strong" : "text-ink-2 enabled:hover:bg-surface-2",
+                )}
               >
-                <span className="relative h-1.5 w-full overflow-hidden rounded-full bg-line-2/70 transition-colors group-hover:bg-line-2">
-                  {done && <span className="absolute inset-0 rounded-full bg-accent/80" />}
-                  {active && <Fill elapsed={elapsed} reduced={reduced} beats={beats} />}
-                </span>
-                <span
-                  className={cn(
-                    "hidden truncate text-[13px] leading-none transition-colors sm:block",
-                    active ? "font-medium text-ink" : "text-ink-3 group-hover:text-ink-2",
-                  )}
-                >
-                  {stage.short}
-                </span>
+                <span className="hidden font-mono text-[10px] tabular-nums text-ink-3 min-[360px]:inline">{String(i + 1).padStart(2, "0")}</span>
+                <span>{stage.short}</span>
+                {(done || active) && (
+                  <span aria-hidden className="absolute inset-x-0 bottom-0 h-0.5">
+                    {done ? <span className="absolute inset-0 bg-accent-line" /> : <Fill elapsed={elapsed} reduced={reduced} beats={beats} />}
+                  </span>
+                )}
               </button>
             </li>
           );
         })}
       </ol>
-      <p className="mt-1 text-[13px] text-ink-2 sm:hidden">
-        <span className="font-medium text-ink">
-          {current + 1} of {stages.length}
-        </span>{" "}
-        {stages[current].short}
-      </p>
     </nav>
   );
 }
