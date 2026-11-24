@@ -76,6 +76,7 @@ export function usePlayback(timings: StageTiming[], gateFor: (stage: number) => 
     reduced: state.reduced,
     elapsed,
     start: useCallback(() => apply({ type: "start" }), [apply]),
+    pause: useCallback(() => apply({ type: "pause" }), [apply]),
     stop: useCallback(() => apply({ type: "stop" }), [apply]),
     toggle: useCallback(() => apply({ type: "toggle" }), [apply]),
     next: useCallback(() => apply({ type: "next" }), [apply]),

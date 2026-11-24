@@ -1,6 +1,6 @@
 import { stageDuration, type StageTiming } from "./timeline";
 
-export type PlaybackStatus = "idle" | "playing" | "paused" | "finished";
+export type PlaybackStatus = "idle" | "playing" | "paused" | "inspecting" | "finished";
 
 export interface PlaybackState {
   stage: number;
@@ -45,10 +45,10 @@ export function playbackReducer(
   const last = timings.length - 1;
   const durationOf = (i: number) => stageDuration(timings[i]?.beats ?? []);
 
-  const enter = (stage: number): PlaybackState => {
+  const enter = (stage: number, inspect = false): PlaybackState => {
     const s = clamp(stage, 0, last);
-    if (state.reduced) {
-      return { ...state, stage: s, elapsed: durationOf(s), status: "paused", waiting: false };
+    if (inspect || state.reduced) {
+      return { ...state, stage: s, elapsed: durationOf(s), status: inspect ? "inspecting" : "paused", waiting: false };
     }
     return { ...state, stage: s, elapsed: 0, status: "playing", waiting: false };
   };
@@ -62,7 +62,7 @@ export function playbackReducer(
 
     case "setReduced": {
       const next = { ...state, reduced: action.reduced };
-      if (action.reduced && state.status !== "idle") {
+      if (action.reduced && state.status !== "idle" && state.status !== "inspecting") {
         return { ...next, elapsed: durationOf(state.stage), status: "paused", waiting: false };
       }
       return next;
@@ -75,6 +75,7 @@ export function playbackReducer(
         // Without motion, "play" means move on to the next stage.
         return state.stage === last ? state : { ...enter(state.stage + 1) };
       }
+      if (state.status === "inspecting") return enter(state.stage);
       return { ...state, status: "playing" };
     }
 
@@ -87,16 +88,16 @@ export function playbackReducer(
     case "next":
       if (state.status === "idle") return enter(0);
       if (state.stage >= last) return { ...state, elapsed: durationOf(last), status: "finished" };
-      return enter(state.stage + 1);
+      return enter(state.stage + 1, state.status === "inspecting");
 
     case "back":
       if (state.status === "idle") return state;
       // Early in a stage, Back goes to the previous stage; later, it restarts this one.
-      if (state.elapsed > 1500 && !state.reduced) return enter(state.stage);
-      return enter(Math.max(0, state.stage - 1));
+      if (state.elapsed > 1500 && !state.reduced && state.status !== "inspecting") return enter(state.stage);
+      return enter(Math.max(0, state.stage - 1), state.status === "inspecting");
 
     case "goTo":
-      return enter(action.stage);
+      return enter(action.stage, true);
 
     case "tick": {
       if (state.status !== "playing" || state.reduced) return state;

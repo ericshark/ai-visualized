@@ -56,14 +56,14 @@ describe("playbackReducer", () => {
   });
 
   it("holds at a gate until the run settles", () => {
-    const held = run([{ type: "start" }, { type: "goTo", stage: 1 }, tick(2500, false)]);
+    const held = run([{ type: "start" }, { type: "goTo", stage: 1 }, { type: "play" }, tick(2500, false)]);
     expect(held).toMatchObject({ stage: 1, elapsed: 2000, waiting: true, status: "playing" });
     const released = playbackReducer(held, tick(500, true), timings);
     expect(released).toMatchObject({ elapsed: 2500, waiting: false });
   });
 
   it("finishes at the end of the last stage", () => {
-    const s = run([{ type: "start" }, { type: "goTo", stage: 2 }, tick(600)]);
+    const s = run([{ type: "start" }, { type: "goTo", stage: 2 }, { type: "play" }, tick(600)]);
     expect(s).toMatchObject({ stage: 2, elapsed: 500, status: "finished" });
     expect(playbackReducer(s, tick(100), timings)).toBe(s);
   });
@@ -73,6 +73,15 @@ describe("playbackReducer", () => {
     expect(run([{ type: "start" }, { type: "next" }, { type: "back" }]).stage).toBe(0);
     expect(run([{ type: "start" }, { type: "goTo", stage: 99 }]).stage).toBe(2);
     expect(run([{ type: "start" }, { type: "back" }]).stage).toBe(0);
+  });
+
+  it("holds a selected stage for inspection until the user plays it", () => {
+    const inspected = run([{ type: "start" }, { type: "goTo", stage: 1 }, tick(9000)]);
+    expect(inspected).toMatchObject({ stage: 1, status: "inspecting" });
+    const stepped = playbackReducer(inspected, { type: "next" }, timings);
+    expect(stepped).toMatchObject({ stage: 2, status: "inspecting" });
+    expect(playbackReducer(stepped, { type: "back" }, timings)).toMatchObject({ stage: 1, status: "inspecting" });
+    expect(playbackReducer(inspected, { type: "play" }, timings)).toMatchObject({ stage: 1, elapsed: 0, status: "playing" });
   });
 
   it("restarts the current stage on back when well into it", () => {

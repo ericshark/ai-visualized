@@ -27,7 +27,7 @@ export function LessonApp() {
   );
   const gateFor = useCallback((stage: number) => lesson.stages[stage]?.ready(run) ?? true, [lesson, run]);
   const playback = usePlayback(timings, gateFor);
-  const { start: startPlayback, reduced } = playback;
+  const { start: startPlayback, pause, reduced } = playback;
 
   const pickExample = useCallback(
     (id: string) => {
@@ -49,17 +49,22 @@ export function LessonApp() {
     setPickerOpen(true);
   }, []);
 
+  const showDetails = useCallback((open: boolean) => {
+    setDeeperOpen(open);
+    if (open) pause();
+  }, [pause]);
+
   return (
     <>
       <TopBar />
       <main className="mx-auto max-w-7xl px-5 pb-16 sm:px-8">
-        <section className="grid gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-center lg:gap-10">
+        <section className="grid gap-6 py-8 sm:py-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-center lg:gap-10">
           <div>
             <h1 className="max-w-[14ch] font-heading text-[clamp(2.55rem,6.3vw,5.5rem)] leading-[0.98] font-semibold tracking-[-0.035em] text-ink">
-              Follow an AI request.
+              How does AI answer you?
             </h1>
             <p className="mt-4 max-w-md text-[17px] leading-relaxed text-ink-2 sm:text-[18px]">
-              Choose a question and follow a simulation from your browser to a language model and back.
+              Follow one question as it becomes tokens, passes through a model, and comes back as an answer.
             </p>
           </div>
           <Composer
@@ -77,7 +82,7 @@ export function LessonApp() {
           run={run}
           playback={playback}
           deeperOpen={deeperOpen}
-          onDeeperChange={setDeeperOpen}
+          onDeeperChange={showDetails}
           onReplay={startPlayback}
           onAskAnother={askAnother}
         />

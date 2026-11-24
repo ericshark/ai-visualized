@@ -8,11 +8,11 @@ import type { StageId } from "@/execution/events";
 import { outputTokens, type RunState } from "@/execution/runReducer";
 import type { DeeperBlock, NodeId } from "../types";
 
-export const NODES: Record<NodeId, { name: string; detail: string }> = {
-  browser: { name: "Browser", detail: "The app you type into, running on your device." },
-  backend: { name: "App server", detail: "The app's own computer. It keeps the secret API key and the rules." },
-  provider: { name: "AI provider", detail: "The company that hosts the model, reached through its API." },
-  model: { name: "Model", detail: "The language model itself, running on the provider's hardware." },
+export const NODES: Record<NodeId, { name: string; action: string }> = {
+  browser: { name: "Browser", action: "Sends your question" },
+  backend: { name: "App server", action: "Checks the request" },
+  provider: { name: "AI provider", action: "Hosts the model" },
+  model: { name: "Model", action: "Builds the answer" },
 };
 
 export interface StageCopy {
@@ -69,8 +69,8 @@ export const COPY: StageCopy[] = [
   },
   {
     id: "backend",
-    title: "The request travels to the backend",
-    short: "Backend",
+    title: "The app server checks your question",
+    short: "Checks",
     simple:
       "The request crosses the internet to the app's server, which checks it and prepares it for the AI.",
     why: "The server is where the app keeps what users must not touch: its secret key, its instructions and its limits.",
@@ -97,7 +97,7 @@ export const COPY: StageCopy[] = [
   },
   {
     id: "provider",
-    title: "The AI provider receives the request",
+    title: "The provider prepares the model’s input",
     short: "Provider",
     simple:
       "The server forwards the request to the AI provider, which runs the model. The model sees only what is in this request.",
@@ -226,7 +226,7 @@ export const COPY: StageCopy[] = [
   },
   {
     id: "generate",
-    title: "The response is generated",
+    title: "The model predicts the next token",
     short: "Generate",
     simple:
       "The model picks one token, adds it to the text, and predicts again. One token at a time, the answer grows.",
@@ -270,7 +270,7 @@ export const COPY: StageCopy[] = [
   },
   {
     id: "return",
-    title: "The response returns",
+    title: "The answer streams back",
     short: "Answer",
     simple:
       "Chunks of the answer flow back through the app server to your browser as they are made, so words appear before the answer is finished.",
@@ -319,7 +319,7 @@ export const COPY: StageCopy[] = [
   },
   {
     id: "recap",
-    title: "The complete picture",
+    title: "From question to answer",
     short: "Recap",
     simple:
       "Your message travels to a server, gets processed by a language model, and the generated response travels back to your screen.",

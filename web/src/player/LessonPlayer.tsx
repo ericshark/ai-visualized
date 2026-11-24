@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
+import { ArrowDownLeft } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import type { RunState } from "@/execution/runReducer";
 import type { Lesson } from "@/lessons/types";
@@ -33,6 +34,8 @@ export function LessonPlayer({
   const reduce = useReducedMotion();
   const { stage: index, status, elapsed, reduced, waiting } = playback;
   const idle = status === "idle";
+  const showFinal = reduced || status === "inspecting";
+  const answerIndex = lesson.stages.findIndex(({ id }) => id === "return");
   const stage = lesson.stages[index];
   const beats = useMemo(() => stage.beats(run), [stage, run]);
   const ready = stage.ready(run);
@@ -50,13 +53,14 @@ export function LessonPlayer({
       else if (event.key === "r" || event.key === "R") onReplay();
       else if (event.key === " " && !target?.closest("button, a, summary, [role='button']")) {
         event.preventDefault();
-        if (!reduced) toggle();
-        else next();
+        if (reduced) next();
+        else if (status === "finished") onReplay();
+        else toggle();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [idle, next, back, toggle, onReplay, reduced]);
+  }, [idle, next, back, toggle, onReplay, reduced, status]);
 
   const railSpec = idle ? { active: [] } : stage.rail(run, beats);
 
@@ -74,7 +78,7 @@ export function LessonPlayer({
     canvas = (
       <motion.div
         key={stage.id}
-        initial={reduce ? false : { opacity: 0, y: 10 }}
+        initial={reduce || showFinal ? false : { opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
@@ -82,7 +86,7 @@ export function LessonPlayer({
           run={run}
           beats={beats}
           elapsed={elapsed}
-          reduced={reduced}
+          reduced={showFinal}
           goTo={playback.goTo}
           onReplay={onReplay}
           onAskAnother={onAskAnother}
@@ -93,22 +97,30 @@ export function LessonPlayer({
 
   return (
     <section id="journey" aria-labelledby="request-map-heading" className="scroll-mt-4">
-      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+      <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
         <h2 id="request-map-heading" className="font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
           Request map
         </h2>
-        <p className="text-sm text-ink-2">
-          {idle ? "Choose a question to start the walkthrough." : "Select a stage to inspect it."}
-        </p>
+        {idle ? (
+          <p className="text-sm text-ink-2">Four stops, from your browser and back</p>
+        ) : answerIndex >= 0 && index !== answerIndex && (
+          <button
+            type="button"
+            onClick={() => playback.goTo(answerIndex)}
+            className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-[var(--return)] px-3 text-sm font-semibold text-[var(--return)] hover:bg-[var(--return-soft)]"
+          >
+            <ArrowDownLeft className="size-4" aria-hidden /> See the answer
+          </button>
+        )}
       </div>
-      <JourneyRail spec={railSpec} beats={beats} elapsed={elapsed} reduced={reduced} idle={idle} />
+      <JourneyRail spec={railSpec} beats={beats} elapsed={elapsed} reduced={showFinal} idle={idle} />
       <div className="mt-4">
         <StageProgress
           stages={lesson.stages}
           current={index}
           beats={beats}
           elapsed={elapsed}
-          reduced={reduced}
+          reduced={showFinal}
           idle={idle}
           onSelect={playback.goTo}
         />
@@ -128,8 +140,7 @@ export function LessonPlayer({
               onReplay={onReplay}
             />
           </div>
-          <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.51fr)] lg:items-start">
-            <div className="min-w-0">{canvas}</div>
+          <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(17rem,0.48fr)_minmax(0,1fr)] lg:items-start">
             <Explanation
               stage={stage}
               index={index}
@@ -138,6 +149,7 @@ export function LessonPlayer({
               open={deeperOpen}
               onOpenChange={onDeeperChange}
             />
+            <div className="min-w-0">{canvas}</div>
           </div>
         </>
       )}

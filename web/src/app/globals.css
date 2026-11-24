@@ -17,7 +17,11 @@
   --accent-line: #a7b9f0;
   --return: #a93f15;
   --return-soft: #f8e6d8;
-  --map-ground: #eeefe9;
+  --map-ground: #16253b;
+  --map-node: #213650;
+  --map-line: #506780;
+  --map-request: #a5bfff;
+  --map-return: #ffc09b;
   --ok: #2b7d55;
   --ok-soft: #e4f3ea;
   --warn: #9a6408;
@@ -167,8 +171,8 @@
 .request-map {
   background-color: var(--map-ground);
   background-image:
-    linear-gradient(rgb(18 32 56 / 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(18 32 56 / 0.055) 1px, transparent 1px);
+    linear-gradient(rgb(214 227 247 / 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(214 227 247 / 0.08) 1px, transparent 1px);
   background-size: 18px 18px;
 }
 

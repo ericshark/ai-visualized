@@ -23,12 +23,14 @@ const quiet = "border-line-2 bg-surface text-ink hover:border-ink-3 hover:bg-sur
 export function PlaybackControls({ status, reduced, waitingFor, canBack, onBack, onToggle, onNext, onReplay }: Props) {
   const finished = status === "finished";
   const playing = status === "playing";
+  const inspecting = status === "inspecting";
+  const playLabel = finished ? "Replay" : playing ? "Pause" : inspecting ? "Play from here" : "Resume";
 
   return (
     <div
       role="group"
       aria-label="Playback controls"
-      className="flex items-center gap-2 rounded-xl border border-line bg-surface p-2"
+      className="flex flex-wrap items-center gap-2 rounded-xl border border-line bg-surface p-2"
     >
       <Tip content="Previous stage (←)">
         <button type="button" onClick={onBack} disabled={!canBack} className={cn(base, quiet)} aria-label="Back">
@@ -38,15 +40,15 @@ export function PlaybackControls({ status, reduced, waitingFor, canBack, onBack,
       </Tip>
 
       {!reduced && (
-        <Tip content={finished ? "Play again from the start (Space)" : playing ? "Pause (Space)" : "Resume (Space)"}>
+        <Tip content={`${playLabel} (Space)`}>
           <button
             type="button"
             onClick={finished ? onReplay : onToggle}
             className={cn(base, "min-w-24 border-accent bg-accent text-white hover:bg-accent-strong")}
-            aria-label={finished ? "Replay" : playing ? "Pause" : "Play"}
+            aria-label={playLabel}
           >
             {finished ? <RotateCcw className="size-4" /> : playing ? <Pause className="size-4" /> : <Play className="size-4" />}
-            <span>{finished ? "Replay" : playing ? "Pause" : "Play"}</span>
+            <span>{playLabel}</span>
           </button>
         </Tip>
       )}

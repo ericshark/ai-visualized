@@ -2,7 +2,6 @@
 
 import type { MotionValue } from "motion/react";
 import { NODE_ICONS } from "@/components/NodeIcons";
-import { Tip } from "@/components/Tip";
 import { NODES } from "@/lessons/ai-request/content";
 import type { NodeId, RailSpec } from "@/lessons/types";
 import { cn } from "@/lib/utils";
@@ -51,18 +50,18 @@ export function JourneyRail({ spec, beats, elapsed, reduced, idle = false }: Pro
   const requestLit = !idle && !returning;
 
   return (
-    <div className="request-map flex min-w-0 flex-col justify-center rounded-xl border border-line-2 px-2 py-5 sm:px-4 sm:py-6">
+    <div className="request-map flex min-w-0 flex-col justify-center rounded-2xl px-2 py-5 text-white sm:px-4 sm:py-7">
       <div className="relative grid grid-cols-4">
         <div aria-hidden className="absolute inset-x-[12.5%] top-6 grid grid-cols-3">
           {ORDER.slice(0, -1).map((id) => (
             <div key={id}>
               <div className={cn(
                 "route-lane relative -top-1.5 h-0 border-t-[1.5px] border-current",
-                requestLit ? "text-accent" : "text-[#637bb9]",
+                requestLit || idle ? "text-[var(--map-request)]" : "text-[var(--map-request)]/40",
               )} />
               <div className={cn(
                 "route-lane route-lane-return relative top-1.5 h-0 border-t-[1.5px] border-current",
-                returning ? "text-[var(--return)]" : "text-[#986b55]",
+                returning || idle ? "text-[var(--map-return)]" : "text-[var(--map-return)]/40",
               )} />
             </div>
           ))}
@@ -71,7 +70,7 @@ export function JourneyRail({ spec, beats, elapsed, reduced, idle = false }: Pro
         {packet && (
           <div
             aria-hidden
-            className="absolute top-2.5 z-20 h-4 w-6 -translate-x-1/2 rounded border border-surface bg-accent"
+            className="absolute top-2.5 z-20 h-4 w-6 -translate-x-1/2 rounded border border-[var(--map-request)] bg-accent"
             style={{ left: `${centre(0) + packet.pos * 25}%` }}
           >
             <svg viewBox="0 0 24 16" className="size-full" fill="none" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
@@ -84,7 +83,7 @@ export function JourneyRail({ spec, beats, elapsed, reduced, idle = false }: Pro
           <span
             key={i}
             aria-hidden
-            className="absolute top-[25px] z-20 size-2.5 -translate-x-1/2 rounded-full border border-surface bg-[var(--return)]"
+            className="absolute top-[25px] z-20 size-2.5 -translate-x-1/2 rounded-full border border-[var(--map-ground)] bg-[var(--map-return)]"
             style={{ left: `${centre(0) + pos * 25}%` }}
           />
         ))}
@@ -94,30 +93,27 @@ export function JourneyRail({ spec, beats, elapsed, reduced, idle = false }: Pro
           const on = spec.active.includes(id);
           const node = NODES[id];
           return (
-            <Tip key={id} content={node.detail} side="bottom">
-              <button type="button" className="relative z-10 flex min-w-0 cursor-help flex-col items-center gap-2 rounded-lg px-1 text-center">
-                <span className={cn(
-                  "grid size-12 place-items-center rounded-lg border bg-surface transition-colors",
-                  on && returning && "border-[var(--return)] bg-[var(--return-soft)] text-[var(--return)]",
-                  on && !returning && "border-accent bg-accent-soft text-accent",
-                  !on && "border-line-2 text-ink-2",
-                )}>
-                  <Icon />
-                </span>
-                <span className="max-w-full rounded bg-surface px-1 py-0.5 text-xs leading-tight font-semibold text-ink sm:px-1.5 sm:text-sm">
-                  {node.name}
-                </span>
-              </button>
-            </Tip>
+            <div key={id} className="relative z-10 flex min-w-0 flex-col items-center gap-2 px-1 text-center">
+              <span className={cn(
+                "grid size-12 place-items-center rounded-xl border transition-colors",
+                on && returning && "border-[var(--map-return)] bg-[var(--map-return)] text-ink",
+                on && !returning && "border-[var(--map-request)] bg-[var(--map-request)] text-ink",
+                !on && "border-[var(--map-line)] bg-[var(--map-node)] text-[#e0e8f9]",
+              )}>
+                <Icon />
+              </span>
+              <span className="text-xs leading-tight font-semibold text-white sm:text-base">{node.name}</span>
+              <span className="max-w-[12ch] text-[11px] leading-snug text-[#cad5e7] sm:max-w-none sm:text-sm">{node.action}</span>
+            </div>
           );
         })}
       </div>
       <div className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs font-medium sm:mt-5">
-        <span className="flex items-center gap-2 text-accent-strong">
-          <span aria-hidden className="h-0.5 w-4 bg-accent" /> Outgoing request
+        <span className="flex items-center gap-2 text-[var(--map-request)]">
+          <span aria-hidden className="h-0.5 w-4 bg-current" /> Outgoing request
         </span>
-        <span className="flex items-center gap-2 text-[var(--return)]">
-          <span aria-hidden className="h-0.5 w-4 bg-[var(--return)]" /> Returning answer
+        <span className="flex items-center gap-2 text-[var(--map-return)]">
+          <span aria-hidden className="h-0.5 w-4 bg-current" /> Returning answer
         </span>
       </div>
     </div>

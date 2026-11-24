@@ -1,6 +1,8 @@
 "use client";
 
-import { RotateCcw, SquarePen } from "lucide-react";
+import { Check, RotateCcw, SquarePen } from "lucide-react";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 import { SourceBadge } from "@/components/SourceBadge";
 import type { StageProps } from "@/lessons/types";
 import { progressOf } from "@/player/timeline";
@@ -51,6 +53,8 @@ export function RecapStage({ beats, elapsed, reduced, goTo, onReplay, onAskAnoth
           </div>
         </div>
 
+        {summary > 0.95 && <UnderstandingCheck />}
+
         <div className="flex flex-wrap gap-2" style={{ opacity: summary }}>
           <button
             type="button"
@@ -71,5 +75,43 @@ export function RecapStage({ beats, elapsed, reduced, goTo, onReplay, onAskAnoth
         </div>
       </div>
     </StageFrame>
+  );
+}
+
+
+const CHECK_OPTIONS = [
+  { label: "The whole answer at once", feedback: "The answer grows one piece at a time. After each choice, the model uses the text so far to predict the next piece." },
+  { label: "One token at a time", feedback: "Exactly. A token can be a word, part of a word, or punctuation. Those small choices build up into an answer." },
+] as const;
+
+function UnderstandingCheck() {
+  const [selected, setSelected] = useState<number | null>(null);
+
+  return (
+    <section aria-labelledby="understanding-check" className="border-t border-line pt-5">
+      <h3 id="understanding-check" className="font-heading text-xl font-semibold text-ink">
+        What does the model predict at each step?
+      </h3>
+      <div role="group" aria-labelledby="understanding-check" className="mt-3 flex flex-wrap gap-2">
+        {CHECK_OPTIONS.map(({ label }, index) => (
+          <button
+            key={label}
+            type="button"
+            aria-pressed={selected === index}
+            onClick={() => setSelected(index)}
+            className={cn(
+              "inline-flex min-h-11 items-center gap-2 rounded-lg border px-3 text-left text-sm font-medium transition-colors",
+              selected === index ? "border-accent bg-accent-soft text-accent-strong" : "border-line-2 bg-surface text-ink hover:border-accent-line",
+            )}
+          >
+            {selected === index && index === 1 && <Check className="size-4" aria-hidden />}
+            {label}
+          </button>
+        ))}
+      </div>
+      <p role="status" className="mt-3 text-sm leading-relaxed text-ink-2">
+        {selected !== null && CHECK_OPTIONS[selected].feedback}
+      </p>
+    </section>
   );
 }

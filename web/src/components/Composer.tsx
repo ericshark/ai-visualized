@@ -15,8 +15,8 @@ interface Props {
 
 export function Composer({ examples, exampleId, onPickExample, open, onOpenChange, triggerRef }: Props) {
   return (
-    <div className="min-w-0 rounded-2xl border border-line-2 bg-surface p-4 sm:p-5">
-      <label htmlFor="prompt" className="mb-3 block text-sm font-semibold text-ink">Your question</label>
+    <div className="min-w-0 rounded-2xl border border-line-2 bg-surface p-4 shadow-raised sm:p-5">
+      <label htmlFor="prompt" className="mb-3 block text-base font-semibold text-ink">Try a question</label>
       <Select.Root
         value={exampleId}
         items={examples.map(({ id, prompt }) => ({ value: id, label: prompt }))}
@@ -30,7 +30,7 @@ export function Composer({ examples, exampleId, onPickExample, open, onOpenChang
           id="prompt"
           ref={triggerRef}
           aria-describedby="question-hint"
-          className="flex min-h-14 w-full items-center justify-between gap-3 rounded-xl border border-line-2 bg-paper px-3.5 py-2.5 text-left text-base leading-snug text-ink transition-colors hover:border-accent-line data-popup-open:border-accent"
+          className="flex min-h-14 w-full items-center justify-between gap-3 rounded-xl border border-accent-line bg-accent-soft px-3.5 py-2.5 text-left text-base leading-snug text-ink transition-colors hover:border-accent-line data-popup-open:border-accent"
         >
           <Select.Value placeholder="Choose a question" />
           <Select.Icon><ChevronDown className="size-5 shrink-0 text-accent" aria-hidden /></Select.Icon>
@@ -55,7 +55,7 @@ export function Composer({ examples, exampleId, onPickExample, open, onOpenChang
         </Select.Portal>
       </Select.Root>
       <p id="question-hint" className="mt-3 text-sm leading-relaxed text-ink-2">
-        Picking a question starts the walkthrough. Each answer is prepared for the lesson.
+        Choose a sample to start the animation.
       </p>
     </div>
   );

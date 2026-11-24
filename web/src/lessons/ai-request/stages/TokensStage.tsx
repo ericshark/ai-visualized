@@ -25,10 +25,8 @@ export function TokensStage({ run, beats, elapsed, reduced }: StageProps) {
 
   const badge = !run.inputTokens ? (
     <SourceBadge kind="conceptual" label="Illustrative split" tip="This run carried no tokenizer output, so the boundaries shown here are only an illustration." />
-  ) : run.inputTokens.exact ? (
-    <SourceBadge kind="demo" label="Sample token split" tip="These boundaries come from the tokenizer used to prepare the sample." />
   ) : (
-    <SourceBadge kind="estimate" />
+    <SourceBadge kind="demo" label="Sample token split" tip="These boundaries come from the tokenizer used to prepare the sample." />
   );
 
   return (
@@ -79,7 +77,7 @@ export function TokensStage({ run, beats, elapsed, reduced }: StageProps) {
           {[
             ["Characters", String(run.prompt.length)],
             [run.inputTokens ? "Tokens" : "Illustrative pieces", String(n)],
-            [run.inputTokens ? "Vocabulary" : "Provider input tokens", run.inputTokens?.encoding ?? run.done?.usage?.inputTokens?.toString() ?? "—"],
+            [run.inputTokens ? "Tokenizer" : "Provider input tokens", run.inputTokens?.encoding ?? run.done?.usage?.inputTokens?.toString() ?? "—"],
           ].map(([label, value]) => (
             <div key={label} className="rounded-lg border border-line bg-surface-2/60 px-3 py-2">
               <dt className="text-[12.5px] text-ink-2">{label}</dt>
@@ -89,7 +87,7 @@ export function TokensStage({ run, beats, elapsed, reduced }: StageProps) {
         </dl>
 
         <p className="text-[14px] text-ink-2" style={{ opacity: easeOut(explore * 2) }}>
-          Hover or focus a token to see its ID. A different model would split this text differently.
+          The number below each token is its ID. Different tokenizers can split the same text in different places.
         </p>
       </div>
     </StageFrame>

@@ -52,25 +52,25 @@ export function Explanation({ stage, index, total, run, open, onOpenChange }: Pr
       initial={reduce ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-2xl border border-line bg-surface p-5 sm:p-6"
+      className="min-w-0 rounded-xl border border-line-2 bg-surface p-5 sm:p-6"
     >
       {/* Announced to screen readers whenever the stage changes. */}
       <div aria-live="polite" aria-atomic="true">
-        <p className="text-[13px] text-ink-3">
+        <p className="font-mono text-xs tabular-nums text-accent-strong">
           Stage {index + 1} of {total}
         </p>
-        <h2 className="mt-1 text-[22px] leading-tight font-semibold tracking-tight text-balance text-ink">{stage.title}</h2>
+        <h2 className="mt-2 font-heading text-2xl leading-tight font-semibold tracking-tight text-balance text-ink sm:text-3xl">{stage.title}</h2>
         <p className="mt-3 text-[16px] leading-relaxed text-ink">{stage.simple}</p>
       </div>
 
-      <dl className="mt-4 space-y-2.5 border-t border-line pt-4 text-[14px] leading-snug">
-        <div className="grid grid-cols-[4.5rem_1fr] gap-3">
-          <dt className="font-medium text-ink">Why</dt>
-          <dd className="text-ink-2">{stage.why}</dd>
+      <dl className="mt-4 space-y-3 text-sm leading-relaxed">
+        <div className="rounded-lg bg-accent-soft px-3 py-2.5">
+          <dt className="font-semibold text-accent-strong">What changed</dt>
+          <dd className="mt-0.5 text-ink">{stage.changes}</dd>
         </div>
-        <div className="grid grid-cols-[4.5rem_1fr] gap-3">
-          <dt className="font-medium text-ink">Result</dt>
-          <dd className="text-ink-2">{stage.changes}</dd>
+        <div>
+          <dt className="font-semibold text-ink">Why it matters</dt>
+          <dd className="mt-0.5 text-ink-2">{stage.why}</dd>
         </div>
       </dl>
 

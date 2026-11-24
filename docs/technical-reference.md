@@ -10,7 +10,7 @@ The Next.js App Router serves the lesson. Picking a question starts a local fixt
 | Example probabilities | Illustrative next-token scores prepared for the lesson. |
 | Simulation | A simplified diagram of what happens inside a model. |
 
-The walkthrough clock and the sample event timeline are independent. The player can pause, step, and replay a run. With reduced motion, each stage opens in its final state and visitors step through manually.
+The walkthrough clock and the sample event timeline are independent. The player can pause, step, and replay a run. Selecting a stage shows its finished state for inspection. Play from here restarts the animation at that stage. With reduced motion, each stage opens in its final state and visitors step through manually.
 
 ## Working on the lesson
 
