@@ -4,9 +4,6 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { Composer } from "@/components/Composer";
 import { TopBar } from "@/components/TopBar";
 import { createDemoAdapter } from "@/execution/demoAdapter";
-import type { Mode } from "@/execution/events";
-import { createLiveAdapter } from "@/execution/liveAdapter";
-import { useHealth } from "@/execution/useHealth";
 import { useRun } from "@/execution/useRun";
 import { EXAMPLES } from "@/lessons/ai-request/examples";
 import { defaultLesson } from "@/lessons/registry";
@@ -15,24 +12,14 @@ import type { StageTiming } from "@/player/timeline";
 import { usePlayback } from "@/player/usePlayback";
 
 const demo = createDemoAdapter(EXAMPLES);
-const live = createLiveAdapter();
 
 export function LessonApp() {
   const lesson = defaultLesson;
-  const { run, start, cancel } = useRun({ demo, live });
-  const health = useHealth();
-
-  const [mode, setMode] = useState<Mode>("demo");
-  const [exampleId, setExampleId] = useState(EXAMPLES[0].id);
-  const [livePrompt, setLivePrompt] = useState(EXAMPLES[0].prompt);
+  const { run, start } = useRun(demo);
+  const [exampleId, setExampleId] = useState<string | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [deeperOpen, setDeeperOpen] = useState(false);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  // Live mode is only possible while the backend reports a key.
-  const effectiveMode: Mode = mode === "live" && health.status === "ready" ? "live" : "demo";
-  const example = EXAMPLES.find((e) => e.id === exampleId) ?? EXAMPLES[0];
-  const prompt = effectiveMode === "live" ? livePrompt : example.prompt;
-  const maxChars = health.status === "ready" ? health.maxInputChars : 500;
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const timings = useMemo<StageTiming[]>(
     () => lesson.stages.map((stage) => ({ beats: stage.beats(run), gateAt: 0 })),
@@ -42,40 +29,24 @@ export function LessonApp() {
   const playback = usePlayback(timings, gateFor);
   const { start: startPlayback, reduced } = playback;
 
-  const begin = useCallback(
-    (nextMode: Mode, text: string) => {
-      if (!text) return;
-      start({ mode: nextMode, prompt: text, exampleId: example.id });
+  const pickExample = useCallback(
+    (id: string) => {
+      const example = EXAMPLES.find((entry) => entry.id === id);
+      if (!example) return;
+      setExampleId(id);
+      setDeeperOpen(false);
+      start({ prompt: example.prompt, exampleId: id });
       startPlayback();
-      requestAnimationFrame(() =>
-        document.getElementById("journey")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" }),
-      );
+      requestAnimationFrame(() => {
+        document.getElementById("journey")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+      });
     },
-    [start, startPlayback, example.id, reduced],
-  );
-
-  const send = useCallback(
-    () => {
-      if (run.status === "running" && run.mode === "live") return;
-      begin(effectiveMode, effectiveMode === "live" ? livePrompt.trim() : example.prompt);
-    },
-    [begin, effectiveMode, livePrompt, example.prompt, run.mode, run.status],
+    [start, startPlayback, reduced],
   );
 
   const askAnother = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
-    inputRef.current?.focus({ preventScroll: true });
-  }, [reduced]);
-
-  const useDemo = useCallback(() => {
-    setMode("demo");
-    begin("demo", example.prompt);
-  }, [begin, example.prompt]);
-
-  const pickExample = useCallback((id: string) => {
-    setExampleId(id);
-    const picked = EXAMPLES.find((e) => e.id === id);
-    if (picked) setLivePrompt(picked.prompt);
+    triggerRef.current?.focus();
+    setPickerOpen(true);
   }, []);
 
   return (
@@ -88,23 +59,16 @@ export function LessonApp() {
               Follow an AI request.
             </h1>
             <p className="mt-4 max-w-md text-[17px] leading-relaxed text-ink-2 sm:text-[18px]">
-              Send a question and see what happens between pressing Send and getting an answer.
+              Choose a question and follow a simulation from your browser to a language model and back.
             </p>
           </div>
           <Composer
-            mode={effectiveMode}
-            onModeChange={setMode}
-            health={health}
             examples={EXAMPLES}
-            exampleId={example.id}
+            exampleId={exampleId}
             onPickExample={pickExample}
-            prompt={prompt}
-            onPromptChange={setLivePrompt}
-            maxChars={maxChars}
-            onSend={send}
-            onStop={cancel}
-            streaming={run.status === "running" && run.mode === "live"}
-            inputRef={inputRef}
+            open={pickerOpen}
+            onOpenChange={setPickerOpen}
+            triggerRef={triggerRef}
           />
         </section>
 
@@ -116,12 +80,10 @@ export function LessonApp() {
           onDeeperChange={setDeeperOpen}
           onReplay={startPlayback}
           onAskAnother={askAnother}
-          onRetry={send}
-          onUseDemo={useDemo}
         />
       </main>
       <footer className="border-t border-line px-5 py-6 text-center text-sm text-ink-2">
-        The lesson labels sample data, live measurements, and simulations throughout.
+        The walkthrough runs in your browser with prepared questions, answers, and timings.
       </footer>
     </>
   );

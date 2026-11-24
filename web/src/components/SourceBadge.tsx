@@ -3,18 +3,13 @@
 import { cn } from "@/lib/utils";
 import { Tip } from "./Tip";
 
-export type BadgeKind = "demo" | "observed" | "conceptual" | "example" | "estimate";
+export type BadgeKind = "demo" | "conceptual" | "example" | "estimate";
 
 const BADGES: Record<BadgeKind, { label: string; tip: string; className: string }> = {
   demo: {
     label: "Sample data",
     tip: "Written for this lesson. Timings follow a typical request but were not measured from a live model.",
     className: "border-line-2 bg-surface text-ink-2",
-  },
-  observed: {
-    label: "Measured",
-    tip: "Captured from your live request.",
-    className: "border-ok/30 bg-ok-soft text-ok",
   },
   conceptual: {
     label: "Simulation",
@@ -66,8 +61,4 @@ export function SourceBadge({
       </button>
     </Tip>
   );
-}
-
-export function sourceKind(source: "demo" | "observed"): BadgeKind {
-  return source === "observed" ? "observed" : "demo";
 }

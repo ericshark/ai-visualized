@@ -12,7 +12,7 @@ import { Panel, StageFrame, easeOut, stagger } from "./shared";
 export function GenerateStage({ run, beats, elapsed, reduced }: StageProps) {
   const ms = useStageTime(elapsed, reduced);
   const plan = generationPlan(run);
-  const { tokens, slow, hasCandidates, measured } = plan;
+  const { tokens, slow, hasCandidates } = plan;
   const pos = beatAt(beats, ms);
 
   const stepIndex = pos.id.startsWith("step") ? Number(pos.id.slice(4)) : -1;
@@ -35,16 +35,16 @@ export function GenerateStage({ run, beats, elapsed, reduced }: StageProps) {
   const picked = q >= 0.45;
 
   const badge = hasCandidates ? (
-    <SourceBadge kind={measured ? "observed" : "example"} label={measured ? "Measured probabilities" : "Example probabilities"} tip={measured ? "Probabilities returned by the model for your live request." : "Illustrative numbers chosen for this sample, not produced by a model."} />
+    <SourceBadge kind="example" label="Example probabilities" />
   ) : (
-    <SourceBadge kind="conceptual" label="Illustrative split" tip="Claude streamed text and reported totals. This animation uses illustrative pieces." />
+    <SourceBadge kind="demo" />
   );
 
   return (
     <StageFrame badges={badge}>
       <div className="flex flex-1 flex-col gap-4">
         <div>
-          <p className="mb-1.5 text-[13px] font-medium text-ink-2">{run.mode === "live" ? "Illustration of text growing" : "What the model reads"}</p>
+          <p className="mb-1.5 text-[13px] font-medium text-ink-2">What the model reads</p>
           <div className="flex flex-wrap items-center gap-1">
             {shownPrompt.map((t, i) => (
               <TokenChip key={`p${i}`} text={t.text} index={i} size="sm" tabIndex={-1} className="opacity-60" />
@@ -110,8 +110,8 @@ export function GenerateStage({ run, beats, elapsed, reduced }: StageProps) {
             <p className="text-center text-[15px] text-ink-2">
               {picked ? (
                 <>
-                  {run.mode === "live" ? "Illustrative piece " : "Picked "}<span className="rounded border border-accent bg-accent px-1.5 py-0.5 font-mono text-white">{showToken(current.text)}</span>
-                  <span className="mt-2 block text-[13.5px] text-ink-3">Claude provides the answer as text and reports token totals.</span>
+                  Picked <span className="rounded border border-accent bg-accent px-1.5 py-0.5 font-mono text-white">{showToken(current.text)}</span>
+                  <span className="mt-2 block text-[13.5px] text-ink-3">This sample shows the selected text piece.</span>
                 </>
               ) : (
                 "Building the answer one piece at a time…"
@@ -124,7 +124,7 @@ export function GenerateStage({ run, beats, elapsed, reduced }: StageProps) {
           {inChunks && (
             <div>
               <h3 className="mb-3 text-[13px] font-semibold text-ink-2">
-                {run.mode === "live" ? `The browser received ${run.chunks.length} text updates` : `${tokens.length} sample tokens arrived in ${run.chunks.length} network chunks`}
+                {tokens.length} sample tokens arrive in {run.chunks.length} chunks
               </h3>
               <div className="flex max-h-[240px] flex-wrap gap-1.5 overflow-auto">
                 {run.chunks.map((chunk, i) => {

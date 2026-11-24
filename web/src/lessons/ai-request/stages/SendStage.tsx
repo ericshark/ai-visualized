@@ -1,6 +1,6 @@
 "use client";
 
-import { SourceBadge, sourceKind } from "@/components/SourceBadge";
+import { SourceBadge } from "@/components/SourceBadge";
 import type { StageProps } from "@/lessons/types";
 import { progressOf } from "@/player/timeline";
 import { useStageTime } from "@/player/useStageTime";
@@ -30,7 +30,7 @@ export function SendStage({ run, beats, elapsed, reduced }: StageProps) {
   const bubbleVisible = bubble > 0;
 
   return (
-    <StageFrame badges={<SourceBadge kind={sourceKind(run.source as "demo" | "observed")} />}>
+    <StageFrame badges={<SourceBadge kind="demo" />}>
       <div className="grid flex-1 gap-5 lg:grid-cols-2 lg:items-center">
         <ChatWindow
           footer={

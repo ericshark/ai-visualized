@@ -76,13 +76,12 @@ export function ModelStage({ run, beats, elapsed, reduced }: StageProps) {
 
   const first = outputTokens(run)[0];
   const candidates = first ? candidatesFor(first) : [];
-  const measured = run.mode === "live" && !!run.done?.probabilitiesMeasured;
 
   const badges = (
     <>
       <SourceBadge kind="conceptual" />
       {predict > 0 && candidates.length > 0 && (
-        <SourceBadge kind={measured ? "observed" : "example"} label={measured ? "Measured scores" : "Example scores"} />
+        <SourceBadge kind="example" label="Example scores" />
       )}
     </>
   );

@@ -26,7 +26,7 @@ export function TokensStage({ run, beats, elapsed, reduced }: StageProps) {
   const badge = !run.inputTokens ? (
     <SourceBadge kind="conceptual" label="Illustrative split" tip="This run carried no tokenizer output, so the boundaries shown here are only an illustration." />
   ) : run.inputTokens.exact ? (
-    <SourceBadge kind="observed" label="Real tokenizer" tip="Computed by the model's own tokenizer for this exact text." />
+    <SourceBadge kind="demo" label="Sample token split" tip="These boundaries come from the tokenizer used to prepare the sample." />
   ) : (
     <SourceBadge kind="estimate" />
   );

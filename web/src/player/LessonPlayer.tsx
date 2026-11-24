@@ -19,8 +19,6 @@ interface Props {
   onDeeperChange: (open: boolean) => void;
   onReplay: () => void;
   onAskAnother: () => void;
-  onRetry: () => void;
-  onUseDemo: () => void;
 }
 
 export function LessonPlayer({
@@ -31,8 +29,6 @@ export function LessonPlayer({
   onDeeperChange,
   onReplay,
   onAskAnother,
-  onRetry,
-  onUseDemo,
 }: Props) {
   const reduce = useReducedMotion();
   const { stage: index, status, elapsed, reduced, waiting } = playback;
@@ -46,9 +42,9 @@ export function LessonPlayer({
   useEffect(() => {
     if (idle) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
       const target = event.target as HTMLElement | null;
-      if (target?.closest("input, textarea, select, [contenteditable='true']")) return;
+      if (target?.closest("input, textarea, select, [contenteditable='true'], [role=combobox], [role=listbox]")) return;
       if (event.key === "ArrowRight") next();
       else if (event.key === "ArrowLeft") back();
       else if (event.key === "r" || event.key === "R") onReplay();
@@ -70,8 +66,6 @@ export function LessonPlayer({
       <StageNotice
         kind={run.status === "cancelled" ? "cancelled" : "error"}
         message={run.error?.message}
-        onRetry={run.error?.retryable || run.status === "cancelled" ? onRetry : undefined}
-        onUseDemo={run.mode === "live" ? onUseDemo : undefined}
       />
     );
   } else if (!idle && !ready) {
@@ -97,8 +91,6 @@ export function LessonPlayer({
     );
   }
 
-  const liveRun = run.mode === "live" && !idle;
-
   return (
     <section id="journey" aria-labelledby="request-map-heading" className="scroll-mt-4">
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -106,13 +98,10 @@ export function LessonPlayer({
           Request map
         </h2>
         <p className="text-sm text-ink-2">
-          {idle ? "Send a question to start the walkthrough." : "Select a stage to inspect it."}
+          {idle ? "Choose a question to start the walkthrough." : "Select a stage to inspect it."}
         </p>
       </div>
-      <div className={liveRun ? "grid gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]" : undefined}>
-        <JourneyRail spec={railSpec} beats={beats} elapsed={elapsed} reduced={reduced} idle={idle} />
-        {liveRun && <LiveAnswer run={run} />}
-      </div>
+      <JourneyRail spec={railSpec} beats={beats} elapsed={elapsed} reduced={reduced} idle={idle} />
       <div className="mt-4">
         <StageProgress
           stages={lesson.stages}
@@ -151,32 +140,6 @@ export function LessonPlayer({
             />
           </div>
         </>
-      )}
-    </section>
-  );
-}
-
-function LiveAnswer({ run }: { run: RunState }) {
-  const usage = run.done?.usage;
-  const status = run.status === "done" ? "Complete" : run.status === "running" ? "Streaming…" : run.status === "cancelled" ? "Stopped" : "Interrupted";
-  const seconds = (ms?: number) => ms == null ? "—" : `${(ms / 1000).toFixed(2)} s`;
-
-  return (
-    <section aria-labelledby="live-answer-heading" className="min-w-0 rounded-xl border border-line-2 bg-surface px-4 py-3 sm:px-5">
-      <div className="flex items-center justify-between gap-2">
-        <h3 id="live-answer-heading" className="text-sm font-semibold">Claude’s answer</h3>
-        <span role="status" className="text-xs font-medium text-[var(--return)]">{status}</span>
-      </div>
-      <p className="mt-2 max-h-44 overflow-auto text-sm leading-relaxed break-words whitespace-pre-wrap text-ink-2" tabIndex={run.text ? 0 : undefined}>
-        {run.text || (run.status === "running" ? "Waiting for the first words…" : run.error?.message || "The request ended before text arrived.")}
-      </p>
-      {run.text && run.error && <p className="mt-2 text-xs text-danger">{run.error.message}</p>}
-      {run.status === "done" && (
-        <dl aria-label="Live measurements" className="mt-3 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-2 text-xs text-ink-2">
-          <div><dt>First text</dt><dd className="font-mono font-medium tabular-nums text-ink">{seconds(run.firstChunkMs)}</dd></div>
-          <div><dt>Total time</dt><dd className="font-mono font-medium tabular-nums text-ink">{seconds(run.totalMs)}</dd></div>
-          {usage && <div><dt>Input / output tokens</dt><dd className="font-mono font-medium tabular-nums text-ink">{usage.inputTokens} / {usage.outputTokens}</dd></div>}
-        </dl>
       )}
     </section>
   );

@@ -8,7 +8,7 @@ import { aiRequestLesson } from "./lesson";
 
 function finishedRun(index = 0): RunState {
   const example = EXAMPLES[index];
-  let run = runReducer(initialRun, { type: "start", runId: "r", mode: "demo", prompt: example.prompt });
+  let run = runReducer(initialRun, { type: "start", runId: "r", prompt: example.prompt });
   for (const raw of example.events) run = runReducer(run, { type: "event", event: stamp(raw, "r", "demo") });
   return run;
 }
@@ -64,7 +64,7 @@ describe("ai-request lesson", () => {
   });
 
   it("holds the data stages until the run has what they show", () => {
-    const empty = runReducer(initialRun, { type: "start", runId: "r", mode: "demo", prompt: "Hi" });
+    const empty = runReducer(initialRun, { type: "start", runId: "r", prompt: "Hi" });
     const ready = Object.fromEntries(aiRequestLesson.stages.map((s) => [s.id, s.ready(empty)]));
     expect(ready).toMatchObject({ send: false, backend: false, provider: false, tokens: false, generate: false, return: false, recap: true });
   });
@@ -76,7 +76,7 @@ describe("ai-request lesson", () => {
   });
 
   it("works for a run that has not produced anything yet", () => {
-    const empty = runReducer(initialRun, { type: "start", runId: "r", mode: "demo", prompt: "Hi" });
+    const empty = runReducer(initialRun, { type: "start", runId: "r", prompt: "Hi" });
     for (const stage of aiRequestLesson.stages) {
       expect(() => stage.deeper(empty)).not.toThrow();
       expect(() => stage.beats(empty)).not.toThrow();
@@ -90,7 +90,6 @@ describe("generation plan", () => {
     const plan = generationPlan(run);
     expect(plan.hasCandidates).toBe(true);
     expect(plan.slow).toBe(5);
-    expect(plan.measured).toBe(false); // demo probabilities are examples, never measured
 
     const beats = generateBeats(run);
     expect(beats.filter((b) => b.id.startsWith("step"))).toHaveLength(5);
@@ -106,14 +105,7 @@ describe("generation plan", () => {
     };
     const plan = generationPlan(stripped);
     expect(plan.hasCandidates).toBe(false);
-    expect(plan.measured).toBe(false);
     expect(plan.slow).toBe(3);
-  });
-
-  it("marks probabilities as measured only for a live run that reported them", () => {
-    const run = finishedRun();
-    const live: RunState = { ...run, mode: "live", done: { ...run.done!, probabilitiesMeasured: true } };
-    expect(generationPlan(live).measured).toBe(true);
   });
 
   it("always includes the chosen token among the candidates", () => {

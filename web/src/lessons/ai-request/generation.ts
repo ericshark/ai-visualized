@@ -14,13 +14,10 @@ export interface GenerationPlan {
   slow: number;
   /** True when the first steps came with next-token alternatives. */
   hasCandidates: boolean;
-  /** True when those alternatives were measured from the model in this run. */
-  measured: boolean;
 }
 
 export function generationPlan(run: RunState): GenerationPlan {
-  const reported = outputTokens(run);
-  const tokens: OutputToken[] = !reported.length && run.mode === "live" ? illustrativePieces(run.text) : reported;
+  const tokens = outputTokens(run);
   let leading = 0;
   while (leading < tokens.length && tokens[leading].top?.length) leading += 1;
   const hasCandidates = leading > 0;
@@ -29,7 +26,6 @@ export function generationPlan(run: RunState): GenerationPlan {
     tokens,
     slow,
     hasCandidates,
-    measured: run.mode === "live" && !!run.done?.probabilitiesMeasured && hasCandidates,
   };
 }
 

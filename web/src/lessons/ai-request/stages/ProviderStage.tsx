@@ -2,7 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { ModelIcon } from "@/components/NodeIcons";
-import { SourceBadge, sourceKind } from "@/components/SourceBadge";
+import { SourceBadge } from "@/components/SourceBadge";
 import { Tip } from "@/components/Tip";
 import type { StageProps } from "@/lessons/types";
 import { cn } from "@/lib/utils";
@@ -33,7 +33,7 @@ export function ProviderStage({ run, beats, elapsed, reduced }: StageProps) {
   ];
 
   return (
-    <StageFrame badges={<SourceBadge kind={sourceKind(run.source as "demo" | "observed")} />}>
+    <StageFrame badges={<SourceBadge kind="demo" />}>
       <div className="grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,0.8fr)] lg:items-center">
         <div style={{ opacity: easeOut(arrive * 3), transform: `translateX(${(1 - arrive) * -60}px)` }}>
           <Panel title={`Request received by ${provider?.provider ?? "the provider"}`} tone="accent" className="space-y-3">

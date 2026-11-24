@@ -1,15 +1,13 @@
 import type {
   AnyRunEvent,
-  Mode,
   OutputToken,
   Payloads,
-  Source,
 } from "./events";
 
 export type RunStatus = "idle" | "running" | "done" | "error" | "cancelled";
 
 export interface Chunk {
-  /** ms since run start when this chunk reached the browser */
+  /** Sample milliseconds from the start of the run */
   t: number;
   text: string;
   tokens?: OutputToken[];
@@ -17,9 +15,6 @@ export interface Chunk {
 
 export interface RunState {
   runId: string | null;
-  mode: Mode;
-  /** Where the data shown for this run comes from. */
-  source: Source;
   status: RunStatus;
   prompt: string;
   events: AnyRunEvent[];
@@ -32,21 +27,19 @@ export interface RunState {
   text: string;
   done?: Payloads["output.done"];
   error?: Payloads["error"];
-  /** Browser-observed time of the first output chunk. */
+  /** Sample time of the first output chunk. */
   firstChunkMs?: number;
-  /** Browser-observed time the answer finished. */
+  /** Sample time the answer finished. */
   totalMs?: number;
 }
 
 export type RunAction =
-  | { type: "start"; runId: string; mode: Mode; prompt: string }
+  | { type: "start"; runId: string; prompt: string }
   | { type: "event"; event: AnyRunEvent }
   | { type: "reset" };
 
 export const initialRun: RunState = {
   runId: null,
-  mode: "demo",
-  source: "demo",
   status: "idle",
   prompt: "",
   events: [],
@@ -64,8 +57,6 @@ export function runReducer(state: RunState, action: RunAction): RunState {
       return {
         ...initialRun,
         runId: action.runId,
-        mode: action.mode,
-        source: action.mode === "live" ? "observed" : "demo",
         status: "running",
         prompt: action.prompt,
       };

@@ -1,6 +1,6 @@
 "use client";
 
-import { SourceBadge, sourceKind } from "@/components/SourceBadge";
+import { SourceBadge } from "@/components/SourceBadge";
 import type { StageProps } from "@/lessons/types";
 import { progressOf } from "@/player/timeline";
 import { useStageTime } from "@/player/useStageTime";
@@ -23,7 +23,7 @@ export function ReturnStage({ run, beats, elapsed, reduced }: StageProps) {
   const markerLeft = (t: number) => `${clamp01(t / total) * 100}%`;
 
   return (
-    <StageFrame badges={<SourceBadge kind={sourceKind(run.source as "demo" | "observed")} label={run.mode === "live" ? "Measured timing" : "Sample timing"} />}>
+    <StageFrame badges={<SourceBadge kind="demo" label="Sample timing" />}>
       <div className="grid flex-1 gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <ChatWindow>
           <UserBubble text={run.prompt} />
@@ -75,7 +75,7 @@ export function ReturnStage({ run, beats, elapsed, reduced }: StageProps) {
               <p className="mt-1 font-mono text-[20px] font-medium text-ink">{seconds(total)}</p>
             </Panel>
             <p className="col-span-2 text-[14px] leading-snug text-ink-2">
-              Because the answer streams, you can start reading after {seconds(first)} instead of waiting {seconds(total)}. This replay runs at the speed the chunks {run.mode === "live" ? "actually " : ""}arrived.
+              Because the answer streams, you can start reading after {seconds(first)} instead of waiting {seconds(total)}. The sample replays the answer in timed chunks.
             </p>
           </div>
         </div>

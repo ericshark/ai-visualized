@@ -46,9 +46,6 @@ export function RecapStage({ beats, elapsed, reduced, goTo, onReplay, onAskAnoth
               <SourceBadge kind="demo" /> written for the lesson
             </span>
             <span className="flex items-center gap-2">
-              <SourceBadge kind="observed" /> captured from a live request
-            </span>
-            <span className="flex items-center gap-2">
               <SourceBadge kind="conceptual" /> a picture of what cannot be seen
             </span>
           </div>

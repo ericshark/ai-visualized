@@ -1,7 +1,7 @@
 "use client";
 
 import { Lock } from "lucide-react";
-import { SourceBadge, sourceKind } from "@/components/SourceBadge";
+import { SourceBadge } from "@/components/SourceBadge";
 import type { StageProps } from "@/lessons/types";
 import { progressOf } from "@/player/timeline";
 import { useStageTime } from "@/player/useStageTime";
@@ -34,7 +34,7 @@ export function BackendStage({ run, beats, elapsed, reduced }: StageProps) {
   ];
 
   return (
-    <StageFrame badges={<SourceBadge kind={sourceKind(run.source as "demo" | "observed")} />}>
+    <StageFrame badges={<SourceBadge kind="demo" />}>
       <div className="grid flex-1 gap-5 lg:grid-cols-2">
         <div className="space-y-4">
           <div style={{ opacity: easeOut(arrive * 3), transform: `translateX(${(1 - arrive) * -60}px)` }}>

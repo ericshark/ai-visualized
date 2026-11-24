@@ -78,9 +78,9 @@ export const COPY: StageCopy[] = [
     deeper: (run) => [
       {
         kind: "text",
-        title: "A Next.js route handler",
+        title: "Example server endpoint",
         body:
-          "The route POST /api/chat/stream receives your question, checks its length, and opens a streaming response to your browser. The API key stays on the app server.",
+          "In this example, the request goes to POST /api/chat/stream. A real server would validate the message and open a streaming response.",
       },
       {
         kind: "facts",
@@ -182,10 +182,8 @@ export const COPY: StageCopy[] = [
       if (usage) {
         blocks.push({
           kind: "text",
-          title: run.mode === "live" ? "Provider token total" : "Sample provider token total",
-          body: run.mode === "live"
-            ? `The provider reported ${usage.inputTokens} input tokens. The total includes the app’s instructions and message formatting.`
-            : `The sample records ${usage.inputTokens} input tokens for the whole request, including the app’s instructions and message formatting.`,
+          title: "Sample provider token total",
+          body: `The sample records ${usage.inputTokens} input tokens for the whole request, including the app’s instructions and message formatting.`,
         });
       }
       return blocks;
@@ -236,7 +234,6 @@ export const COPY: StageCopy[] = [
     changes: "A full answer forms, token by token, until the model predicts that it is finished.",
     deeper: (run) => {
       const tokens = outputTokens(run);
-      const measured = run.done?.probabilitiesMeasured;
       return [
         {
           kind: "text",
@@ -264,7 +261,7 @@ export const COPY: StageCopy[] = [
             { label: "Network chunks", value: String(run.chunks.length) },
             {
               label: "Probabilities",
-              value: measured ? "Measured, from the model" : run.mode === "demo" ? "Example values" : "Not provided by the model",
+              value: tokens.some((token) => token.top?.length) ? "Example values" : "Unavailable in this sample",
             },
           ],
         },
@@ -274,7 +271,7 @@ export const COPY: StageCopy[] = [
   {
     id: "return",
     title: "The response returns",
-    short: "Return",
+    short: "Answer",
     simple:
       "Chunks of the answer flow back through the app server to your browser as they are made, so words appear before the answer is finished.",
     why: "Streaming lets you start reading after the first chunk instead of waiting for the whole answer.",
@@ -301,7 +298,7 @@ export const COPY: StageCopy[] = [
           : []),
         {
           kind: "facts",
-          title: run.mode === "live" ? "Timing measured in your browser" : "Sample timing",
+          title: "Sample timing",
           items: [
             { label: "Time to first text", value: seconds(run.firstChunkMs) },
             { label: "Total time", value: seconds(run.totalMs) },
@@ -339,7 +336,7 @@ export const COPY: StageCopy[] = [
         kind: "text",
         title: "What you saw, and how",
         body:
-          "In Sample mode the lesson uses prepared answers and timings. Claude Live shows your actual answer, timing, and reported token totals. The diagrams illustrate how text can split into tokens and how the model processes them.",
+          "The lesson uses prepared answers and timings. The diagrams illustrate how text can split into tokens and how the model processes them.",
       },
     ],
   },

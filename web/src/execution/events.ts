@@ -1,10 +1,8 @@
 /**
- * The normalized event model. Every fact the lesson shows about a run arrives
- * as one of these events, whether it was recorded (demo), measured in this
- * run (observed), or is a teaching simulation (conceptual).
+ * Sample events describe the request, provider handoff and streamed answer.
  */
 
-export type Source = "demo" | "observed" | "conceptual";
+export type Source = "demo" | "conceptual";
 
 export type StageId =
   | "send"
@@ -15,8 +13,6 @@ export type StageId =
   | "generate"
   | "return"
   | "recap";
-
-export type Mode = "demo" | "live";
 
 export interface Token {
   text: string;
@@ -102,22 +98,10 @@ export interface RunEvent<T extends EventType = EventType> {
 
 export type AnyRunEvent = { [K in EventType]: RunEvent<K> }[EventType];
 
-/** Event as stored in a fixture or sent by the server: no run identity yet. */
+/** Event as stored in a fixture, before it receives a run identity. */
 export type UnstampedEvent = {
   [K in EventType]: { type: K; t: number; stage: StageId; payload: Payloads[K] };
 }[EventType];
-
-export const EVENT_STAGE: Record<EventType, StageId> = {
-  "request.created": "send",
-  "backend.received": "backend",
-  "backend.validated": "backend",
-  "input.tokens": "tokens",
-  "provider.request": "provider",
-  "output.delta": "return",
-  "output.done": "return",
-  error: "return",
-  cancelled: "return",
-};
 
 let counter = 0;
 
